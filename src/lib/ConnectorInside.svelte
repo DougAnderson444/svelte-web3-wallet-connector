@@ -1,5 +1,6 @@
 <script lang="ts">
 	// svelte stuff
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
 	import { connectToChild } from 'penpal';
@@ -7,12 +8,7 @@
 	import Logo from './assets/Logo.svelte';
 
 	export let wallet; // portal to the wallet
-	export let inputUrl = 'http://localhost:8089/'; // pick better default
-	let src = inputUrl;
-
-	let placeholder = 'Enter Wallet Url';
-	let iframe;
-	let focused;
+	export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-engine/'; // pick better default
 
 	// flex dimensions
 	export let topOffsetHeight = 0;
@@ -22,11 +18,40 @@
 
 	export let show;
 
+	let src = inputUrl;
+
+	let placeholder = 'Enter Wallet Url';
+	let iframe;
+	let focused;
+
+	let saveInputURL;
+	let timer;
+	const INPUT_URL = 'INPUT_URL';
+
 	const data = {
 		loading: true // load right away
 	};
 
+	// cache user's preferred wallet URL to their browser
+	onMount(async () => {
+		const { ImmortalDB } = await import('immortal-db');
+
+		saveInputURL = async () => {
+			await ImmortalDB.set(INPUT_URL, src);
+		};
+
+		// check for URL
+		const storedValue = await ImmortalDB.get(INPUT_URL, null);
+		if (storedValue) {
+			inputUrl = storedValue;
+			connect();
+		}
+	});
+
+	$: src && saveInputURL && saveInputURL();
+
 	async function handleIframeLoad() {
+		console.log('Iframe loaded');
 		data.loading = false;
 
 		let pending;
@@ -53,9 +78,12 @@
 		});
 
 		pending = await connection.promise;
+		show();
+		console.log({ pending });
 	}
 
 	const connect = () => {
+		if (src === inputUrl) return;
 		src = '';
 		src = inputUrl;
 		data.loading = true;
@@ -94,6 +122,7 @@
 				on:focus={() => (focused = true)}
 				on:blur={() => (focused = false)}
 				bind:value={inputUrl}
+				on:input={saveInputURL}
 			/>
 			<span class="green-line" />
 		</div>
@@ -224,7 +253,6 @@
 		margin: 0;
 		padding: 0;
 		font-size: 0.95em;
-		min-width: 10ch;
-		max-width: 25vw;
+		min-width: 15ch;
 	}
 </style>
