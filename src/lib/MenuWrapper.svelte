@@ -38,7 +38,7 @@
 		z-index: 100;
 		cursor: pointer;
 		/* 	background-color: black; */
-		padding: 1.618em;
+		margin: 1.618em;
 		opacity: 0.95;
 	}
 
