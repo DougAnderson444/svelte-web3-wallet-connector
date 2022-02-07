@@ -6,7 +6,7 @@
 
 	import { dev } from '$app/env';
 
-	export let inputUrl; // = dev ? 'http://localhost:8089' : 'https://arweave.app';
+	export let inputUrl; 
 
 	let wallet;
 	let mounted;
