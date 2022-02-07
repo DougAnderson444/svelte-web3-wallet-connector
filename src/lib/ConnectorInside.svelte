@@ -161,8 +161,9 @@
 			bind:this={iframe}
 			{src}
 			style="width: 100%; height: 100%;"
-			allow="clipboard-read; clipboard-write 'self' {src}"
+			allow="clipboard-read 'self' 'src'; clipboard-write 'self' 'src';"
 		/>
+		<!-- allow="clipboard-read 'self' 'src' {src}; clipboard-write 'self' 'src' {src};" -->
 	</div>
 </div>
 
