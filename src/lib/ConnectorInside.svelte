@@ -18,7 +18,7 @@
 
 	export let show;
 
-	let src = inputUrl;
+	let src;
 
 	let placeholder = 'Enter Wallet Url';
 	let iframe;
@@ -44,8 +44,8 @@
 		const storedValue = await ImmortalDB.get(INPUT_URL, null);
 		if (storedValue) {
 			inputUrl = storedValue;
-			connect();
 		}
+		connect();
 	});
 
 	$: src && saveInputURL && saveInputURL();
