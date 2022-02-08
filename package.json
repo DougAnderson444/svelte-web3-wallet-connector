@@ -1,6 +1,6 @@
 {
 	"name": "@peerpiper/svelte-web3-wallet-connector",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"main": "bundled/umd/",
 	"module": "bundled/es/",
 	"browser": "bundled/iife/",
