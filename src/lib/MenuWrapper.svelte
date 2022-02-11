@@ -25,7 +25,7 @@
 
 <div class:mask={navOpen} on:click={onClickOutside} />
 <div class="sidenav" class:open={navOpen}>
-	<slot openNav={() => (navOpen = true)} />
+	<slot openNav={() => (navOpen = true)} hideNav={() => (navOpen = false)} />
 </div>
 
 <style>
