@@ -15,8 +15,10 @@
 	export let topOffsetWidth = 0;
 	export let iframeParentHeight = 0;
 	export let iframeParentWidth = 0;
+	let iframeOffsetWidth;
 
 	export let show;
+	export let hide;
 
 	let src;
 
@@ -65,11 +67,14 @@
 					iframeParentHeight = height;
 				},
 				setIframeParentWidth(width) {
-					console.log('Rx width', width);
+					// console.log('Rx width', width);
 					iframeParentWidth = width;
 				},
 				show() {
 					show();
+				},
+				hide() {
+					hide();
 				},
 				walletReady() {
 					wallet = pending;
@@ -99,6 +104,7 @@
 	$: iframe && iframe.addEventListener('load', handleIframeLoad);
 	$: popupIcon = wallet?.keepPopup ? 'close' : 'launch';
 	$: connectionIcon = wallet?.address ? 'unplug' : 'plug';
+	$: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -155,12 +161,15 @@
 			</div>
 		</div>
 	</div>
-	<div class="iframe" style="height: calc({iframeParentHeight}px + 18px)">
+	<div
+		class="iframe"
+		style="height: calc({iframeParentHeight}px + 18px)"
+		bind:offsetWidth={iframeOffsetWidth}
+	>
 		<iframe
 			title="Web Wallet"
 			bind:this={iframe}
 			{src}
-			style="width: 100%; height: 100%;"
 			allow="clipboard-read 'self' 'src'; clipboard-write 'self' 'src';"
 		/>
 		<!-- allow="clipboard-read 'self' 'src' {src}; clipboard-write 'self' 'src' {src};" -->
@@ -184,6 +193,8 @@
 	}
 	iframe {
 		border: none;
+		width: 100%;
+		height: 100%;
 	}
 	.iframe {
 		display: flex;
