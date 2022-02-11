@@ -17,7 +17,7 @@
 
 {#if mounted}
 	<!-- <Connector bind:wallet {inputUrl} /> -->
-	<MenuWrapper let:openNav>
-		<ConnectorInside bind:wallet {inputUrl} show={openNav} />
+	<MenuWrapper let:openNav let:hideNav>
+		<ConnectorInside bind:wallet {inputUrl} show={openNav} hide={hideNav} />
 	</MenuWrapper>
 {/if}
