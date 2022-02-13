@@ -53,7 +53,7 @@
 	$: src && saveInputURL && saveInputURL();
 
 	async function handleIframeLoad() {
-		console.log('Iframe loaded');
+		// console.log('Iframe loaded');
 		data.loading = false;
 
 		let pending;
@@ -84,7 +84,7 @@
 
 		pending = await connection.promise;
 		show();
-		console.log({ pending });
+		// console.log({ pending });
 	}
 
 	const connect = () => {
