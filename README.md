@@ -12,7 +12,7 @@ Import the Svelte component into your project:
 import { Web3WalletConnector } from "@peerpiper/svelte-web3-wallet-connector"
 
 let wallet
-let inputUrl = 'https://wallet.peerpiper.io/' // can be changed by any user
+let inputUrl = 'https://peerpiper.github.io/iframe-wallet-engine'; // the default URL, can be anywhere
 
 <Web3WalletConnector bind:wallet {inputUrl} />
 
