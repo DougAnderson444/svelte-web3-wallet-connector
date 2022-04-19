@@ -39,13 +39,21 @@
 		const { ImmortalDB } = await import('immortal-db');
 
 		saveInputURL = async () => {
-			await ImmortalDB.set(INPUT_URL, src);
+			try {
+				await ImmortalDB.set(INPUT_URL, src);
+			} catch (error) {
+				console.warn('Did not save', src, error);
+			}
 		};
 
 		// check for URL
-		const storedValue = await ImmortalDB.get(INPUT_URL, null);
-		if (storedValue) {
-			inputUrl = storedValue;
+		try {
+			const storedValue = await ImmortalDB.get(INPUT_URL, null);
+			if (storedValue) {
+				inputUrl = storedValue;
+			}
+		} catch (error) {
+			console.warn('Did not get', error);
 		}
 		connect();
 	});
