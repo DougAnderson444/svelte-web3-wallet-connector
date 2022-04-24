@@ -19,7 +19,7 @@ let inputUrl = 'https://peerpiper.github.io/iframe-wallet-engine'; // the defaul
 // use any method available from their Wallet provider
 wallet.ed25519.sign(someData)
 wallet.proxcryptor.selfEncrypt(someSecret)
-wallet.arweave.signTransaction(txData)
+wallet.arweaveWalletAPI.signTransaction(txData)
 
 ```
 
