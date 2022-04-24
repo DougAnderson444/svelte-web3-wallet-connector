@@ -86,6 +86,9 @@
 				},
 				walletReady() {
 					wallet = pending;
+					// overwrite any other arweave wallets on the window object
+					// @ts-ignore
+					window.arweaveWallet = wallet.arweaveWalletAPI;
 				}
 			}
 		});
