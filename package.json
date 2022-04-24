@@ -1,6 +1,6 @@
 {
 	"name": "@peerpiper/web3-wallet-connector",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"main": "bundled/umd/",
 	"module": "bundled/es/",
 	"browser": "bundled/iife/",
@@ -17,7 +17,6 @@
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
-		"@peerpiper/iframe-wallet-engine": "file:../iframe-wallet-engine",
 		"@rollup/plugin-commonjs": "^21.0.1",
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^13.1.3",
