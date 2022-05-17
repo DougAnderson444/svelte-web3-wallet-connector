@@ -1,10 +1,8 @@
 {
 	"name": "@peerpiper/web3-wallet-connector",
 	"version": "0.0.7",
-	"main": "bundled/umd/",
-	"module": "bundled/es/",
-	"browser": "bundled/iife/",
-	"svelte": "src/lib/index.js",
+	"main": "index.js",
+	"module": "index.js",
 	"scripts": {
 		"dev": "svelte-kit dev --port=39876",
 		"build": "svelte-kit build",
