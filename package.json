@@ -1,6 +1,6 @@
 {
 	"name": "@peerpiper/web3-wallet-connector",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"main": "bundled/umd/",
 	"module": "bundled/es/",
 	"browser": "bundled/iife/",
