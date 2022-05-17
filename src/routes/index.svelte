@@ -1,12 +1,12 @@
 <script>
-	import '../app.css';
+	import '$lib/app.css';
 
 	import { onMount } from 'svelte';
 	import Web3WalletMenu from '$lib/Web3WalletMenu.svelte';
 
 	import { dev } from '$app/env';
 
-	export let inputUrl; 
+	export let inputUrl;
 
 	let wallet;
 	let mounted;

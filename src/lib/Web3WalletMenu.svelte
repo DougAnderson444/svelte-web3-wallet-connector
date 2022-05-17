@@ -1,5 +1,5 @@
 <script>
-	import '../app.css';
+	import './app.css';
 
 	import { onMount } from 'svelte';
 	import MenuWrapper from './MenuWrapper.svelte';

@@ -32,6 +32,7 @@
   },
   "exports": {
     "./package.json": "./package.json",
+    "./app.css": "./app.css",
     "./assets/Logo.svelte": "./assets/Logo.svelte",
     "./assets/p.svelte": "./assets/p.svelte",
     "./bundled/es/Connector.min": "./bundled/es/Connector.min.js",
