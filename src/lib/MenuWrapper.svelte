@@ -40,6 +40,7 @@
 		/* 	background-color: black; */
 		margin: 1.618em;
 		opacity: 0.95;
+		width: auto;
 	}
 
 	.menu-icon {
