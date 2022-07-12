@@ -33,8 +33,8 @@
 		display: flex;
 		align-items: center;
 		position: absolute;
-		top: 0%;
-		right: 0%;
+		top: 15px;
+		right: 6px;
 		z-index: 100;
 		cursor: pointer;
 		/* 	background-color: black; */
