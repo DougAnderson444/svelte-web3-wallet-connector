@@ -16,7 +16,6 @@
 </script>
 
 {#if mounted}
-	<!-- <Connector bind:wallet {inputUrl} /> -->
 	<MenuWrapper let:openNav let:hideNav>
 		<ConnectorInside bind:wallet {inputUrl} show={openNav} hide={hideNav} />
 	</MenuWrapper>

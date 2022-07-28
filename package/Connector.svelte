@@ -5,7 +5,7 @@ import { connectToChild } from 'penpal';
 import IconButton from './components/WalletSelectorIcons.svelte';
 import Logo from './assets/Logo.svelte';
 export let wallet; // portal to the wallet
-export let inputUrl = 'http://localhost:8089/'; // pick better default
+export let inputUrl = 'https://douganderson444.github.io/iframe-wallet-kit/'; // pick better default
 let src = inputUrl;
 let placeholder = 'Enter Wallet Url';
 let child;
