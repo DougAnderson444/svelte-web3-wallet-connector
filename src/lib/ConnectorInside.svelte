@@ -8,7 +8,7 @@
 	import Logo from './assets/Logo.svelte';
 
 	export let wallet; // portal to the wallet
-	export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sveltekit/'; // pick better default
+	export let inputUrl = 'https://douganderson444.github.io/iframe-wallet-kit/';
 
 	// flex dimensions
 	export let topOffsetHeight = 0;
