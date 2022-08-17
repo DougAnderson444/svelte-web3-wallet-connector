@@ -10,15 +10,23 @@
 
 	let wallet;
 	let mounted;
+	let signature;
 
 	let show;
 	onMount(() => {
 		mounted = true;
 	});
+
+	// run as soon as the wallet is ready
+	$: if (wallet)
+		wallet.ed25519.sign({ someData: 'some data' }).then((sig) => {
+			console.log('Signature from Wallet:', sig);
+			signature = sig;
+		});
 </script>
 
 <div class="app" id="app">
-	<h1>Welcome to SvelteKit - Web3 Wallet Connector</h1>
+	<h1>Welcome to Web3 Wallet Connector</h1>
 	<div>
 		To get started,
 		<ul>
@@ -30,31 +38,15 @@
 		</ul>
 	</div>
 	{#if mounted}
-		<Web3WalletMenu bind:wallet {inputUrl} />
+		<Web3WalletMenu
+			{inputUrl}
+			on:walletReady={(e) => {
+				wallet = e.detail.wallet;
+			}}
+		/>
 	{/if}
+	Signature: {signature}
 </div>
 
 <style>
-	/* .app {
-		--app-spacing: 48px;
-		--spacing: 2em;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: var(--app-spacing);
-		padding-bottom: 0;
-	}
-
-	@media (max-width: 599px) {
-		.app {
-			--app-spacing: 24px;
-			--spacing: 1.5em;
-		}
-	}
-
-	@media (max-width: 399px) {
-		.app {
-			--app-spacing: 12px;
-		}
-	} */
 </style>
