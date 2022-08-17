@@ -7,7 +7,7 @@
 	import IconButton from './components/WalletSelectorIcons.svelte';
 	import Logo from './assets/Logo.svelte';
 
-	export let wallet; // portal to the wallet
+	export let wallet = null;
 	export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/';
 
 	// flex dimensions
