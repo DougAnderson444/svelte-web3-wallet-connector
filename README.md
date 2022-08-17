@@ -13,6 +13,8 @@ For example, in your client side (browser) code, you can import an ES module and
 ```js
 // see ./src/routes/vanilla.svelte
 
+import Web3WalletMenu from '@peerpiper/web3-wallet-connector/bundled/es/Web3WalletMenu.svelte.js';
+
 let wallet, signature;
 
 const menu = new Web3WalletMenu({
@@ -40,7 +42,12 @@ import { Web3WalletConnector } from "@peerpiper/svelte-web3-wallet-connector"
 let wallet
 let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/'; // the default URL, can be anywhere
 
-<Web3WalletConnector bind:wallet {inputUrl} />
+<Web3WalletConnector
+	{inputUrl}
+	on:walletReady={(e) => {
+		wallet = e.detail.wallet;
+	}}
+/>
 
 // use any method available from their Wallet provider
 wallet.ed25519.sign(someData)
