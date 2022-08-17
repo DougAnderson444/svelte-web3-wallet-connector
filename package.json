@@ -1,6 +1,6 @@
 {
 	"name": "@peerpiper/web3-wallet-connector",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"main": "index.js",
 	"module": "index.js",
 	"scripts": {
@@ -21,6 +21,7 @@
 		"@rollup/plugin-typescript": "^8.3.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
+		"globby": "^13.1.2",
 		"prettier": "^2.4.1",
 		"prettier-plugin-svelte": "^2.4.0",
 		"rollup-plugin-css-only": "^3.1.0",

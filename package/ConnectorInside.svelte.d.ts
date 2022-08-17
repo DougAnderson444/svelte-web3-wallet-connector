@@ -11,6 +11,8 @@ declare const __propDef: {
         hide: any;
     };
     events: {
+        walletReady: CustomEvent<any>;
+    } & {
         [evt: string]: CustomEvent<any>;
     };
     slots: {};

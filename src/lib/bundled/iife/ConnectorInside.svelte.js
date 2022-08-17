@@ -1,8 +1,6 @@
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Connector = factory());
-})(this, (function () { 'use strict';
+this.ConnectorInside = this.ConnectorInside || {};
+this.ConnectorInside.svelte = (function () {
+    'use strict';
 
     function noop() { }
     const identity = x => x;
@@ -86,9 +84,6 @@
     }
     function null_to_empty(value) {
         return value == null ? '' : value;
-    }
-    function action_destroyer(action_result) {
-        return action_result && is_function(action_result.destroy) ? action_result.destroy : noop;
     }
 
     const is_client = typeof window !== 'undefined';
@@ -331,6 +326,9 @@
         if (!current_component)
             throw new Error('Function called outside component initialization');
         return current_component;
+    }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
     }
     function createEventDispatcher() {
         const component = get_current_component();
@@ -728,321 +726,6 @@
             easing,
             css: t => `opacity: ${t * o}`
         };
-    }
-
-    // src/memoize.js
-    function memoize(fn, options) {
-      var cache = options && options.cache ? options.cache : cacheDefault;
-      var serializer = options && options.serializer ? options.serializer : serializerDefault;
-      var strategy = options && options.strategy ? options.strategy : strategyDefault;
-      return strategy(fn, {
-        cache,
-        serializer
-      });
-    }
-    function isPrimitive(value) {
-      return value == null || typeof value === "number" || typeof value === "boolean";
-    }
-    function monadic(fn, cache, serializer, arg) {
-      var cacheKey = isPrimitive(arg) ? arg : serializer(arg);
-      var computedValue = cache.get(cacheKey);
-      if (typeof computedValue === "undefined") {
-        computedValue = fn.call(this, arg);
-        cache.set(cacheKey, computedValue);
-      }
-      return computedValue;
-    }
-    function variadic(fn, cache, serializer) {
-      var args = Array.prototype.slice.call(arguments, 3);
-      var cacheKey = serializer(args);
-      var computedValue = cache.get(cacheKey);
-      if (typeof computedValue === "undefined") {
-        computedValue = fn.apply(this, args);
-        cache.set(cacheKey, computedValue);
-      }
-      return computedValue;
-    }
-    function assemble(fn, context, strategy, cache, serialize) {
-      return strategy.bind(context, fn, cache, serialize);
-    }
-    function strategyDefault(fn, options) {
-      var strategy = fn.length === 1 ? monadic : variadic;
-      return assemble(fn, this, strategy, options.cache.create(), options.serializer);
-    }
-    function serializerDefault() {
-      return JSON.stringify(arguments);
-    }
-    function ObjectWithoutPrototypeCache() {
-      this.cache = /* @__PURE__ */ Object.create(null);
-    }
-    ObjectWithoutPrototypeCache.prototype.has = function(key) {
-      return key in this.cache;
-    };
-    ObjectWithoutPrototypeCache.prototype.get = function(key) {
-      return this.cache[key];
-    };
-    ObjectWithoutPrototypeCache.prototype.set = function(key, value) {
-      this.cache[key] = value;
-    };
-    var cacheDefault = {
-      create: function create() {
-        return new ObjectWithoutPrototypeCache();
-      }
-    };
-    var memoize_default = memoize;
-
-    // src/index.ts
-    var DEFAULT_CLASS = {
-      MAIN: "svelte-draggable",
-      DRAGGING: "svelte-draggable-dragging",
-      DRAGGED: "svelte-draggable-dragged"
-    };
-    var draggable = (node, options = {}) => {
-      var _a, _b;
-      let {
-        bounds,
-        axis = "both",
-        gpuAcceleration = true,
-        applyUserSelectHack = true,
-        disabled = false,
-        ignoreMultitouch = false,
-        grid,
-        position,
-        cancel,
-        handle,
-        defaultClass = DEFAULT_CLASS.MAIN,
-        defaultClassDragging = DEFAULT_CLASS.DRAGGING,
-        defaultClassDragged = DEFAULT_CLASS.DRAGGED,
-        defaultPosition = { x: 0, y: 0 },
-        onDragStart,
-        onDrag,
-        onDragEnd
-      } = options;
-      const tick = new Promise(requestAnimationFrame);
-      let active = false;
-      let [translateX, translateY] = [0, 0];
-      let [initialX, initialY] = [0, 0];
-      let [clientToNodeOffsetX, clientToNodeOffsetY] = [0, 0];
-      let { x: xOffset, y: yOffset } = { x: (_a = position == null ? void 0 : position.x) != null ? _a : 0, y: (_b = position == null ? void 0 : position.y) != null ? _b : 0 };
-      setTranslate(xOffset, yOffset, node, gpuAcceleration);
-      let canMoveInX;
-      let canMoveInY;
-      let bodyOriginalUserSelectVal = "";
-      let computedBounds;
-      let nodeRect;
-      let dragEl;
-      let cancelEl;
-      let isControlled = !!position;
-      const getEventData = () => ({
-        offsetX: translateX,
-        offsetY: translateY,
-        domRect: node.getBoundingClientRect()
-      });
-      function fireSvelteDragStartEvent(node2) {
-        const data = getEventData();
-        node2.dispatchEvent(new CustomEvent("svelte-drag:start", { detail: data }));
-        onDragStart == null ? void 0 : onDragStart(data);
-      }
-      function fireSvelteDragStopEvent(node2) {
-        const data = getEventData();
-        node2.dispatchEvent(new CustomEvent("svelte-drag:end", { detail: data }));
-        onDragEnd == null ? void 0 : onDragEnd(data);
-      }
-      function fireSvelteDragEvent(node2, translateX2, translateY2) {
-        const data = getEventData();
-        node2.dispatchEvent(new CustomEvent("svelte-drag", { detail: data }));
-        onDrag == null ? void 0 : onDrag(data);
-      }
-      const listen = addEventListener;
-      listen("touchstart", dragStart, false);
-      listen("touchend", dragEnd, false);
-      listen("touchmove", drag, false);
-      listen("mousedown", dragStart, false);
-      listen("mouseup", dragEnd, false);
-      listen("mousemove", drag, false);
-      node.style.touchAction = "none";
-      const calculateInverseScale = () => {
-        let inverseScale = node.offsetWidth / nodeRect.width;
-        if (isNaN(inverseScale))
-          inverseScale = 1;
-        return inverseScale;
-      };
-      function dragStart(e) {
-        if (disabled)
-          return;
-        if (ignoreMultitouch && e.type === "touchstart" && e.touches.length > 1)
-          return;
-        node.classList.add(defaultClass);
-        dragEl = getDragEl(handle, node);
-        cancelEl = getCancelElement(cancel, node);
-        canMoveInX = ["both", "x"].includes(axis);
-        canMoveInY = ["both", "y"].includes(axis);
-        if (typeof bounds !== "undefined") {
-          computedBounds = computeBoundRect(bounds, node);
-        }
-        nodeRect = node.getBoundingClientRect();
-        if (isString(handle) && isString(cancel) && handle === cancel)
-          throw new Error("`handle` selector can't be same as `cancel` selector");
-        if (cancelEl == null ? void 0 : cancelEl.contains(dragEl))
-          throw new Error("Element being dragged can't be a child of the element on which `cancel` is applied");
-        if (dragEl.contains(e.target) && !(cancelEl == null ? void 0 : cancelEl.contains(e.target)))
-          active = true;
-        if (!active)
-          return;
-        if (applyUserSelectHack) {
-          bodyOriginalUserSelectVal = document.body.style.userSelect;
-          document.body.style.userSelect = "none";
-        }
-        fireSvelteDragStartEvent(node);
-        const { clientX, clientY } = isTouchEvent(e) ? e.touches[0] : e;
-        const inverseScale = calculateInverseScale();
-        if (canMoveInX)
-          initialX = clientX - xOffset / inverseScale;
-        if (canMoveInY)
-          initialY = clientY - yOffset / inverseScale;
-        if (computedBounds) {
-          clientToNodeOffsetX = clientX - nodeRect.left;
-          clientToNodeOffsetY = clientY - nodeRect.top;
-        }
-      }
-      function dragEnd() {
-        if (!active)
-          return;
-        node.classList.remove(defaultClassDragging);
-        node.classList.add(defaultClassDragged);
-        if (applyUserSelectHack)
-          document.body.style.userSelect = bodyOriginalUserSelectVal;
-        fireSvelteDragStopEvent(node);
-        if (canMoveInX)
-          initialX = translateX;
-        if (canMoveInX)
-          initialY = translateY;
-        active = false;
-      }
-      function drag(e) {
-        if (!active)
-          return;
-        node.classList.add(defaultClassDragging);
-        e.preventDefault();
-        nodeRect = node.getBoundingClientRect();
-        const { clientX, clientY } = isTouchEvent(e) ? e.touches[0] : e;
-        let [finalX, finalY] = [clientX, clientY];
-        const inverseScale = calculateInverseScale();
-        if (computedBounds) {
-          const virtualClientBounds = {
-            left: computedBounds.left + clientToNodeOffsetX,
-            top: computedBounds.top + clientToNodeOffsetY,
-            right: computedBounds.right + clientToNodeOffsetX - nodeRect.width,
-            bottom: computedBounds.bottom + clientToNodeOffsetY - nodeRect.height
-          };
-          finalX = clamp(finalX, virtualClientBounds.left, virtualClientBounds.right);
-          finalY = clamp(finalY, virtualClientBounds.top, virtualClientBounds.bottom);
-        }
-        if (Array.isArray(grid)) {
-          let [xSnap, ySnap] = grid;
-          if (isNaN(+xSnap) || xSnap < 0)
-            throw new Error("1st argument of `grid` must be a valid positive number");
-          if (isNaN(+ySnap) || ySnap < 0)
-            throw new Error("2nd argument of `grid` must be a valid positive number");
-          let [deltaX, deltaY] = [finalX - initialX, finalY - initialY];
-          [deltaX, deltaY] = snapToGrid([Math.floor(xSnap / inverseScale), Math.floor(ySnap / inverseScale)], deltaX, deltaY);
-          [finalX, finalY] = [initialX + deltaX, initialY + deltaY];
-        }
-        if (canMoveInX)
-          translateX = (finalX - initialX) * inverseScale;
-        if (canMoveInY)
-          translateY = (finalY - initialY) * inverseScale;
-        [xOffset, yOffset] = [translateX, translateY];
-        fireSvelteDragEvent(node);
-        tick.then(() => setTranslate(translateX, translateY, node, gpuAcceleration));
-      }
-      return {
-        destroy: () => {
-          const unlisten = removeEventListener;
-          unlisten("touchstart", dragStart, false);
-          unlisten("touchend", dragEnd, false);
-          unlisten("touchmove", drag, false);
-          unlisten("mousedown", dragStart, false);
-          unlisten("mouseup", dragEnd, false);
-          unlisten("mousemove", drag, false);
-        },
-        update: (options2) => {
-          var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k;
-          axis = options2.axis || "both";
-          disabled = (_a2 = options2.disabled) != null ? _a2 : false;
-          ignoreMultitouch = (_b2 = options2.ignoreMultitouch) != null ? _b2 : false;
-          handle = options2.handle;
-          bounds = options2.bounds;
-          cancel = options2.cancel;
-          applyUserSelectHack = (_c = options2.applyUserSelectHack) != null ? _c : true;
-          grid = options2.grid;
-          gpuAcceleration = (_d = options2.gpuAcceleration) != null ? _d : true;
-          const dragged = node.classList.contains(defaultClassDragged);
-          node.classList.remove(defaultClass, defaultClassDragged);
-          defaultClass = (_e = options2.defaultClass) != null ? _e : DEFAULT_CLASS.MAIN;
-          defaultClassDragging = (_f = options2.defaultClassDragging) != null ? _f : DEFAULT_CLASS.DRAGGING;
-          defaultClassDragged = (_g = options2.defaultClassDragged) != null ? _g : DEFAULT_CLASS.DRAGGED;
-          node.classList.add(defaultClass);
-          if (dragged)
-            node.classList.add(defaultClassDragged);
-          if (isControlled) {
-            xOffset = translateX = (_i = (_h = options2.position) == null ? void 0 : _h.x) != null ? _i : translateX;
-            yOffset = translateY = (_k = (_j = options2.position) == null ? void 0 : _j.y) != null ? _k : translateY;
-            tick.then(() => setTranslate(translateX, translateY, node, gpuAcceleration));
-          }
-        }
-      };
-    };
-    function isTouchEvent(event) {
-      return Boolean(event.touches && event.touches.length);
-    }
-    function clamp(val, min, max) {
-      return Math.min(Math.max(val, min), max);
-    }
-    function isString(val) {
-      return typeof val === "string";
-    }
-    var snapToGrid = memoize_default(([xSnap, ySnap], pendingX, pendingY) => {
-      const x = Math.round(pendingX / xSnap) * xSnap;
-      const y = Math.round(pendingY / ySnap) * ySnap;
-      return [x, y];
-    });
-    function getDragEl(handle, node) {
-      if (!handle)
-        return node;
-      const handleEl = node.querySelector(handle);
-      if (handleEl === null)
-        throw new Error("Selector passed for `handle` option should be child of the element on which the action is applied");
-      return handleEl;
-    }
-    function getCancelElement(cancel, node) {
-      if (!cancel)
-        return;
-      const cancelEl = node.querySelector(cancel);
-      if (cancelEl === null)
-        throw new Error("Selector passed for `cancel` option should be child of the element on which the action is applied");
-      return cancelEl;
-    }
-    function computeBoundRect(bounds, rootNode) {
-      if (typeof bounds === "object") {
-        const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
-        const { top = 0, left = 0, right = 0, bottom = 0 } = bounds;
-        const computedRight = windowWidth - right;
-        const computedBottom = windowHeight - bottom;
-        return { top, right: computedRight, bottom: computedBottom, left };
-      }
-      if (bounds === "parent") {
-        const boundRect = rootNode.parentNode.getBoundingClientRect();
-        return boundRect;
-      }
-      const node = document.querySelector(bounds);
-      if (node === null)
-        throw new Error("The selector provided for bound doesn't exists in the document.");
-      const computedBounds = node.getBoundingClientRect();
-      return computedBounds;
-    }
-    function setTranslate(xPos, yPos, el, gpuAcceleration) {
-      el.style.transform = gpuAcceleration ? `translate3d(${+xPos}px, ${+yPos}px, 0)` : `translate(${+xPos}px, ${+yPos}px)`;
     }
 
     var MessageType;
@@ -1962,29 +1645,29 @@
     	}
     }
 
-    /* src\lib\Connector.svelte generated by Svelte v3.46.3 */
+    /* src\lib\ConnectorInside.svelte generated by Svelte v3.46.3 */
 
     const { window: window_1 } = globals;
 
     function add_css(target) {
-    	append_styles(target, "svelte-1gf2ryb", "div.svelte-1gf2ryb{--background:#161616}.top.svelte-1gf2ryb{display:flex;justify-content:space-between}iframe.svelte-1gf2ryb{border:none}.iframe.svelte-1gf2ryb{display:flex;height:100%}.logo.svelte-1gf2ryb{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url-input.svelte-1gf2ryb{position:fixed;top:var(--spacing);right:var(--spacing);background:var(--background);border:0.5px solid #333;display:flex;flex-direction:column;align-items:stretch;border-radius:8px;--url-input-max-width:80vw;max-width:var(--url-input-max-width);max-height:95vh;width:min(var(--url-input-width), var(--url-input-max-width));min-width:var(--url-input-min-width);--spacing:1em;padding:var(--spacing);filter:drop-shadow(2px 4px 6px rgba(133, 133, 133, 0.5))}.url-input.svelte-1gf2ryb:hover{cursor:move}.url.svelte-1gf2ryb{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-1gf2ryb{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-1gf2ryb{display:flex}.actions.svelte-1gf2ryb:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-1gf2ryb{opacity:0.9;color:#e0f7fa}.connected.svelte-1gf2ryb{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-1gf2ryb{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-1gf2ryb{display:flex;flex-direction:column;width:100%}input.svelte-1gf2ryb{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:10ch;max-width:25vw}");
+    	append_styles(target, "svelte-1jxvnse", "div.svelte-1jxvnse{--spacing:1em}.connector-container.svelte-1jxvnse{padding:1.618em}div.svelte-1jxvnse{--background:#161616}.top.svelte-1jxvnse{display:flex;justify-content:space-between;align-items:center}iframe.svelte-1jxvnse{border:none;width:100%;height:100%}.iframe.svelte-1jxvnse{display:flex;height:100%}.logo.svelte-1jxvnse{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url.svelte-1jxvnse{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-1jxvnse{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-1jxvnse{display:flex}.actions.svelte-1jxvnse:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-1jxvnse{opacity:0.9;color:#e0f7fa}.connected.svelte-1jxvnse{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-1jxvnse{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-1jxvnse{display:flex;flex-direction:column;width:100%}input.svelte-1jxvnse{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:15ch}");
     }
 
-    // (88:3) {#if wallet?.address || inputUrl}
+    // (132:3) {#if wallet?.address || inputUrl}
     function create_if_block(ctx) {
     	let div;
     	let iconbutton;
     	let div_class_value;
     	let div_transition;
     	let current;
-    	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[11] } });
-    	iconbutton.$on("click", /*togglePopup*/ ctx[14]);
+    	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[12] } });
+    	iconbutton.$on("click", /*togglePopup*/ ctx[15]);
 
     	return {
     		c() {
     			div = element("div");
     			create_component(iconbutton.$$.fragment);
-    			attr(div, "class", div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1gf2ryb"));
+    			attr(div, "class", div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1jxvnse"));
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -1993,10 +1676,10 @@
     		},
     		p(ctx, dirty) {
     			const iconbutton_changes = {};
-    			if (dirty & /*popupIcon*/ 2048) iconbutton_changes.icon = /*popupIcon*/ ctx[11];
+    			if (dirty & /*popupIcon*/ 4096) iconbutton_changes.icon = /*popupIcon*/ ctx[12];
     			iconbutton.$set(iconbutton_changes);
 
-    			if (!current || dirty & /*wallet*/ 1 && div_class_value !== (div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1gf2ryb"))) {
+    			if (!current || dirty & /*wallet*/ 1 && div_class_value !== (div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1jxvnse"))) {
     				attr(div, "class", div_class_value);
     			}
     		},
@@ -2025,11 +1708,11 @@
     	};
     }
 
-    // (104:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
+    // (148:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
     function create_default_slot(ctx) {
     	let span;
 
-    	let t_value = (/*data*/ ctx[9].loading || !/*src*/ ctx[3]
+    	let t_value = (/*data*/ ctx[10].loading || !/*src*/ ctx[6]
     	? 'Loading...'
     	: 'Load') + "";
 
@@ -2043,20 +1726,20 @@
 
     			attr(span, "class", span_class_value = "" + (null_to_empty((/*wallet*/ ctx[0]?.address)
     			? ' connected '
-    			: ' disconnected ') + " svelte-1gf2ryb"));
+    			: ' disconnected ') + " svelte-1jxvnse"));
     		},
     		m(target, anchor) {
     			insert(target, span, anchor);
     			append(span, t);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*data, src*/ 520 && t_value !== (t_value = (/*data*/ ctx[9].loading || !/*src*/ ctx[3]
+    			if (dirty & /*data, src*/ 1088 && t_value !== (t_value = (/*data*/ ctx[10].loading || !/*src*/ ctx[6]
     			? 'Loading...'
     			: 'Load') + "")) set_data(t, t_value);
 
     			if (dirty & /*wallet*/ 1 && span_class_value !== (span_class_value = "" + (null_to_empty((/*wallet*/ ctx[0]?.address)
     			? ' connected '
-    			: ' disconnected ') + " svelte-1gf2ryb"))) {
+    			: ' disconnected ') + " svelte-1jxvnse"))) {
     				attr(span, "class", span_class_value);
     			}
     		},
@@ -2088,7 +1771,7 @@
     	let div5;
     	let iframe_1;
     	let iframe_1_src_value;
-    	let iframe_1_allow_value;
+    	let div5_resize_listener;
     	let current;
     	let mounted;
     	let dispose;
@@ -2097,13 +1780,13 @@
 
     	iconbutton = new WalletSelectorIcons({
     			props: {
-    				icon: /*connectionIcon*/ ctx[10],
+    				icon: /*connectionIcon*/ ctx[11],
     				$$slots: { default: [create_default_slot] },
     				$$scope: { ctx }
     			}
     		});
 
-    	iconbutton.$on("click", /*click_handler*/ ctx[19]);
+    	iconbutton.$on("click", /*click_handler*/ ctx[23]);
 
     	return {
     		c() {
@@ -2126,37 +1809,33 @@
     			t4 = space();
     			div5 = element("div");
     			iframe_1 = element("iframe");
-    			attr(div0, "class", "actions logo svelte-1gf2ryb");
+    			attr(div0, "class", "actions logo svelte-1jxvnse");
     			attr(a, "href", "https://PeerPiper.io");
     			attr(a, "target", "_blank");
     			attr(a, "rel", "noreferrer");
-    			attr(input, "class", "url svelte-1gf2ryb");
+    			attr(input, "class", "url svelte-1jxvnse");
     			attr(input, "placeholder", placeholder);
-    			attr(span, "class", "green-line svelte-1gf2ryb");
-    			attr(div1, "class", "url-input-container svelte-1gf2ryb");
+    			attr(span, "class", "green-line svelte-1jxvnse");
+    			attr(div1, "class", "url-input-container svelte-1jxvnse");
 
-    			attr(div2, "class", div2_class_value = "" + (null_to_empty((/*data*/ ctx[9]?.loading)
+    			attr(div2, "class", div2_class_value = "" + (null_to_empty((/*data*/ ctx[10]?.loading)
     			? 'action dim'
     			: /*wallet*/ ctx[0]?.address
     				? ' connected '
-    				: ' disconnected ') + " svelte-1gf2ryb"));
+    				: ' disconnected ') + " svelte-1jxvnse"));
 
-    			attr(div3, "class", "actions svelte-1gf2ryb");
-    			attr(div4, "class", "top svelte-1gf2ryb");
-    			set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[5]);
-    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[20].call(div4));
+    			attr(div3, "class", "actions svelte-1jxvnse");
+    			attr(div4, "class", "top svelte-1jxvnse");
+    			set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
+    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[24].call(div4));
     			attr(iframe_1, "title", "Web Wallet");
-    			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[3])) attr(iframe_1, "src", iframe_1_src_value);
-    			set_style(iframe_1, "width", "100%");
-    			set_style(iframe_1, "height", "100%");
-    			attr(iframe_1, "allow", iframe_1_allow_value = "clipboard-write 'self' " + /*src*/ ctx[3]);
-    			attr(iframe_1, "class", "svelte-1gf2ryb");
-    			attr(div5, "class", "iframe svelte-1gf2ryb");
-    			set_style(div5, "height", /*iframeParentHeight*/ ctx[7] + "px");
-    			attr(div6, "class", "url-input svelte-1gf2ryb");
-    			set_style(div6, "height", "calc(var(--spacing) * 2 + " + /*topOffsetHeight*/ ctx[5] + "px + " + /*iframeParentHeight*/ ctx[7] + "px + 2px)");
-    			set_style(div6, "--url-input-width", "calc(var(--spacing) * 2 + " + /*iframeParentWidth*/ ctx[8] + "px + 2px)");
-    			set_style(div6, "--url-input-min-width", /*topOffsetWidth*/ ctx[6] + "px");
+    			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[6])) attr(iframe_1, "src", iframe_1_src_value);
+    			attr(iframe_1, "allow", "clipboard-read 'self' 'src'; clipboard-write 'self' 'src';");
+    			attr(iframe_1, "class", "svelte-1jxvnse");
+    			attr(div5, "class", "iframe svelte-1jxvnse");
+    			set_style(div5, "height", "calc(" + /*iframeParentHeight*/ ctx[4] + "px + 18px)");
+    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[26].call(div5));
+    			attr(div6, "class", "connector-container svelte-1jxvnse");
     		},
     		m(target, anchor) {
     			insert(target, div6, anchor);
@@ -2176,26 +1855,31 @@
     			append(div3, t3);
     			append(div3, div2);
     			mount_component(iconbutton, div2, null);
-    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[20].bind(div4));
+    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[24].bind(div4));
     			append(div6, t4);
     			append(div6, div5);
     			append(div5, iframe_1);
-    			/*iframe_1_binding*/ ctx[21](iframe_1);
+    			/*iframe_1_binding*/ ctx[25](iframe_1);
+    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[26].bind(div5));
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen(window_1, "keydown", /*handleKeydown*/ ctx[15]),
-    					listen(input, "focus", /*focus_handler*/ ctx[16]),
-    					listen(input, "blur", /*blur_handler*/ ctx[17]),
-    					listen(input, "input", /*input_input_handler*/ ctx[18]),
-    					action_destroyer(draggable.call(null, div6))
+    					listen(window_1, "keydown", /*handleKeydown*/ ctx[16]),
+    					listen(input, "focus", /*focus_handler*/ ctx[20]),
+    					listen(input, "blur", /*blur_handler*/ ctx[21]),
+    					listen(input, "input", /*input_input_handler*/ ctx[22]),
+    					listen(input, "input", function () {
+    						if (is_function(/*saveInputURL*/ ctx[8])) /*saveInputURL*/ ctx[8].apply(this, arguments);
+    					})
     				];
 
     				mounted = true;
     			}
     		},
-    		p(ctx, [dirty]) {
+    		p(new_ctx, [dirty]) {
+    			ctx = new_ctx;
+
     			if (dirty & /*inputUrl*/ 2 && input.value !== /*inputUrl*/ ctx[1]) {
     				set_input_value(input, /*inputUrl*/ ctx[1]);
     			}
@@ -2224,48 +1908,32 @@
     			}
 
     			const iconbutton_changes = {};
-    			if (dirty & /*connectionIcon*/ 1024) iconbutton_changes.icon = /*connectionIcon*/ ctx[10];
+    			if (dirty & /*connectionIcon*/ 2048) iconbutton_changes.icon = /*connectionIcon*/ ctx[11];
 
-    			if (dirty & /*$$scope, wallet, data, src*/ 16777737) {
+    			if (dirty & /*$$scope, wallet, data, src*/ 1073742913) {
     				iconbutton_changes.$$scope = { dirty, ctx };
     			}
 
     			iconbutton.$set(iconbutton_changes);
 
-    			if (!current || dirty & /*data, wallet*/ 513 && div2_class_value !== (div2_class_value = "" + (null_to_empty((/*data*/ ctx[9]?.loading)
+    			if (!current || dirty & /*data, wallet*/ 1025 && div2_class_value !== (div2_class_value = "" + (null_to_empty((/*data*/ ctx[10]?.loading)
     			? 'action dim'
     			: /*wallet*/ ctx[0]?.address
     				? ' connected '
-    				: ' disconnected ') + " svelte-1gf2ryb"))) {
+    				: ' disconnected ') + " svelte-1jxvnse"))) {
     				attr(div2, "class", div2_class_value);
     			}
 
-    			if (!current || dirty & /*topOffsetHeight*/ 32) {
-    				set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[5]);
+    			if (!current || dirty & /*topOffsetHeight*/ 4) {
+    				set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
     			}
 
-    			if (!current || dirty & /*src*/ 8 && !src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[3])) {
+    			if (!current || dirty & /*src*/ 64 && !src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[6])) {
     				attr(iframe_1, "src", iframe_1_src_value);
     			}
 
-    			if (!current || dirty & /*src*/ 8 && iframe_1_allow_value !== (iframe_1_allow_value = "clipboard-write 'self' " + /*src*/ ctx[3])) {
-    				attr(iframe_1, "allow", iframe_1_allow_value);
-    			}
-
-    			if (!current || dirty & /*iframeParentHeight*/ 128) {
-    				set_style(div5, "height", /*iframeParentHeight*/ ctx[7] + "px");
-    			}
-
-    			if (!current || dirty & /*topOffsetHeight, iframeParentHeight*/ 160) {
-    				set_style(div6, "height", "calc(var(--spacing) * 2 + " + /*topOffsetHeight*/ ctx[5] + "px + " + /*iframeParentHeight*/ ctx[7] + "px + 2px)");
-    			}
-
-    			if (!current || dirty & /*iframeParentWidth*/ 256) {
-    				set_style(div6, "--url-input-width", "calc(var(--spacing) * 2 + " + /*iframeParentWidth*/ ctx[8] + "px + 2px)");
-    			}
-
-    			if (!current || dirty & /*topOffsetWidth*/ 64) {
-    				set_style(div6, "--url-input-min-width", /*topOffsetWidth*/ ctx[6] + "px");
+    			if (!current || dirty & /*iframeParentHeight*/ 16) {
+    				set_style(div5, "height", "calc(" + /*iframeParentHeight*/ ctx[4] + "px + 18px)");
     			}
     		},
     		i(local) {
@@ -2287,7 +1955,8 @@
     			if (if_block) if_block.d();
     			destroy_component(iconbutton);
     			div4_resize_listener();
-    			/*iframe_1_binding*/ ctx[21](null);
+    			/*iframe_1_binding*/ ctx[25](null);
+    			div5_resize_listener();
     			mounted = false;
     			run_all(dispose);
     		}
@@ -2295,29 +1964,62 @@
     }
 
     let placeholder = 'Enter Wallet Url';
+    const INPUT_URL = 'INPUT_URL';
 
     function instance($$self, $$props, $$invalidate) {
     	let popupIcon;
     	let connectionIcon;
     	let { wallet } = $$props;
-    	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sveltekit/' } = $$props;
-    	let src = inputUrl;
+    	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/' } = $$props;
+    	let { topOffsetHeight = 0 } = $$props;
+    	let { topOffsetWidth = 0 } = $$props;
+    	let { iframeParentHeight = 0 } = $$props;
+    	let { iframeParentWidth = 0 } = $$props;
+    	let iframeOffsetWidth;
+    	let { show } = $$props;
+    	let { hide } = $$props;
+    	const dispatch = createEventDispatcher();
+    	let src;
     	let iframe;
     	let focused;
-
-    	// flex dimensions
-    	let topOffsetHeight, topOffsetWidth;
-
-    	let iframeParentHeight;
-    	let iframeParentWidth;
+    	let saveInputURL;
 
     	const data = {
     		loading: true, // load right away
     		
     	};
 
+    	// cache user's preferred wallet URL to their browser
+    	onMount(async () => {
+    		const { ImmortalDB } = await Promise.resolve().then(function () { return index; });
+
+    		$$invalidate(8, saveInputURL = async () => {
+    			try {
+    				await ImmortalDB.set(INPUT_URL, src);
+    			} catch(error) {
+    				console.warn('Did not save', src, error);
+    			}
+    		});
+
+    		// check for URL
+    		try {
+    			const storedValue = await ImmortalDB.get(INPUT_URL, null);
+
+    			if (storedValue) {
+    				$$invalidate(1, inputUrl = storedValue);
+    			}
+    		} catch(error) {
+    			console.warn('Did not get', error);
+    		}
+
+    		connect();
+    	});
+
     	async function handleIframeLoad() {
-    		$$invalidate(9, data.loading = false, data);
+    		// console.log('Iframe loaded');
+    		$$invalidate(10, data.loading = false, data);
+
+    		let pending;
 
     		const connection = connectToChild({
     			// The iframe to which a connection should be made.
@@ -2325,23 +2027,40 @@
     			// Methods the parent is exposing to the child.
     			methods: {
     				setIframeParentHeight(height) {
-    					$$invalidate(7, iframeParentHeight = height);
+    					$$invalidate(4, iframeParentHeight = height);
     				},
     				setIframeParentWidth(width) {
-    					console.log('Rx width', width);
-    					$$invalidate(8, iframeParentWidth = width);
+    					// console.log('Rx width', width);
+    					$$invalidate(17, iframeParentWidth = width);
+    				},
+    				show() {
+    					show();
+    				},
+    				hide() {
+    					hide();
+    				},
+    				walletReady() {
+    					$$invalidate(0, wallet = pending); // when using svelte bind:wallet
+    					dispatch('walletReady', { wallet }); // when using vanilla JS
+
+    					// overwrite any other arweave wallets on the window object
+    					// @ts-ignore
+    					window.arweaveWallet = wallet.arweaveWalletAPI;
+
+    					return true;
     				}
     			}
     		});
 
-    		$$invalidate(0, wallet = await connection.promise);
-    		return wallet;
+    		pending = await connection.promise;
+    		show();
     	}
 
     	const connect = () => {
-    		$$invalidate(3, src = '');
-    		$$invalidate(3, src = inputUrl);
-    		$$invalidate(9, data.loading = true, data);
+    		if (src === inputUrl) return;
+    		$$invalidate(6, src = '');
+    		$$invalidate(6, src = inputUrl);
+    		$$invalidate(10, data.loading = true, data);
     	};
 
     	const disconnect = () => wallet.disconnect();
@@ -2351,8 +2070,8 @@
     		if (event.key === 'Enter' && focused) connect();
     	}
 
-    	const focus_handler = () => $$invalidate(4, focused = true);
-    	const blur_handler = () => $$invalidate(4, focused = false);
+    	const focus_handler = () => $$invalidate(9, focused = true);
+    	const blur_handler = () => $$invalidate(9, focused = false);
 
     	function input_input_handler() {
     		inputUrl = this.value;
@@ -2366,46 +2085,66 @@
     	function div4_elementresize_handler() {
     		topOffsetHeight = this.offsetHeight;
     		topOffsetWidth = this.offsetWidth;
-    		$$invalidate(5, topOffsetHeight);
-    		$$invalidate(6, topOffsetWidth);
+    		$$invalidate(2, topOffsetHeight);
+    		$$invalidate(3, topOffsetWidth);
     	}
 
     	function iframe_1_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			iframe = $$value;
-    			$$invalidate(2, iframe);
+    			$$invalidate(7, iframe);
     		});
+    	}
+
+    	function div5_elementresize_handler() {
+    		iframeOffsetWidth = this.offsetWidth;
+    		$$invalidate(5, iframeOffsetWidth);
     	}
 
     	$$self.$$set = $$props => {
     		if ('wallet' in $$props) $$invalidate(0, wallet = $$props.wallet);
     		if ('inputUrl' in $$props) $$invalidate(1, inputUrl = $$props.inputUrl);
+    		if ('topOffsetHeight' in $$props) $$invalidate(2, topOffsetHeight = $$props.topOffsetHeight);
+    		if ('topOffsetWidth' in $$props) $$invalidate(3, topOffsetWidth = $$props.topOffsetWidth);
+    		if ('iframeParentHeight' in $$props) $$invalidate(4, iframeParentHeight = $$props.iframeParentHeight);
+    		if ('iframeParentWidth' in $$props) $$invalidate(17, iframeParentWidth = $$props.iframeParentWidth);
+    		if ('show' in $$props) $$invalidate(18, show = $$props.show);
+    		if ('hide' in $$props) $$invalidate(19, hide = $$props.hide);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*iframe*/ 4) {
+    		if ($$self.$$.dirty & /*src, saveInputURL*/ 320) {
+    			src && saveInputURL && saveInputURL();
+    		}
+
+    		if ($$self.$$.dirty & /*iframe*/ 128) {
     			iframe && iframe.addEventListener('load', handleIframeLoad);
     		}
 
     		if ($$self.$$.dirty & /*wallet*/ 1) {
-    			$$invalidate(11, popupIcon = (wallet?.keepPopup) ? 'close' : 'launch');
+    			$$invalidate(12, popupIcon = (wallet?.keepPopup) ? 'close' : 'launch');
     		}
 
     		if ($$self.$$.dirty & /*wallet*/ 1) {
-    			$$invalidate(10, connectionIcon = (wallet?.address) ? 'unplug' : 'plug');
+    			$$invalidate(11, connectionIcon = (wallet?.address) ? 'unplug' : 'plug');
+    		}
+
+    		if ($$self.$$.dirty & /*iframeOffsetWidth, wallet*/ 33) {
+    			iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
     		}
     	};
 
     	return [
     		wallet,
     		inputUrl,
-    		iframe,
-    		src,
-    		focused,
     		topOffsetHeight,
     		topOffsetWidth,
     		iframeParentHeight,
-    		iframeParentWidth,
+    		iframeOffsetWidth,
+    		src,
+    		iframe,
+    		saveInputURL,
+    		focused,
     		data,
     		connectionIcon,
     		popupIcon,
@@ -2413,22 +2152,594 @@
     		disconnect,
     		togglePopup,
     		handleKeydown,
+    		iframeParentWidth,
+    		show,
+    		hide,
     		focus_handler,
     		blur_handler,
     		input_input_handler,
     		click_handler,
     		div4_elementresize_handler,
-    		iframe_1_binding
+    		iframe_1_binding,
+    		div5_elementresize_handler
     	];
     }
 
-    class Connector extends SvelteComponent {
+    class ConnectorInside extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance, create_fragment, safe_not_equal, { wallet: 0, inputUrl: 1 }, add_css);
+
+    		init(
+    			this,
+    			options,
+    			instance,
+    			create_fragment,
+    			safe_not_equal,
+    			{
+    				wallet: 0,
+    				inputUrl: 1,
+    				topOffsetHeight: 2,
+    				topOffsetWidth: 3,
+    				iframeParentHeight: 4,
+    				iframeParentWidth: 17,
+    				show: 18,
+    				hide: 19
+    			},
+    			add_css
+    		);
     	}
     }
 
-    return Connector;
+    var js_cookie = {exports: {}};
 
-}));
+    /*!
+     * JavaScript Cookie v2.2.1
+     * https://github.com/js-cookie/js-cookie
+     *
+     * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+     * Released under the MIT license
+     */
+
+    (function (module, exports) {
+    (function (factory) {
+    	var registeredInModuleLoader;
+    	{
+    		module.exports = factory();
+    		registeredInModuleLoader = true;
+    	}
+    	if (!registeredInModuleLoader) {
+    		var OldCookies = window.Cookies;
+    		var api = window.Cookies = factory();
+    		api.noConflict = function () {
+    			window.Cookies = OldCookies;
+    			return api;
+    		};
+    	}
+    }(function () {
+    	function extend () {
+    		var i = 0;
+    		var result = {};
+    		for (; i < arguments.length; i++) {
+    			var attributes = arguments[ i ];
+    			for (var key in attributes) {
+    				result[key] = attributes[key];
+    			}
+    		}
+    		return result;
+    	}
+
+    	function decode (s) {
+    		return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);
+    	}
+
+    	function init (converter) {
+    		function api() {}
+
+    		function set (key, value, attributes) {
+    			if (typeof document === 'undefined') {
+    				return;
+    			}
+
+    			attributes = extend({
+    				path: '/'
+    			}, api.defaults, attributes);
+
+    			if (typeof attributes.expires === 'number') {
+    				attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
+    			}
+
+    			// We're using "expires" because "max-age" is not supported by IE
+    			attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+    			try {
+    				var result = JSON.stringify(value);
+    				if (/^[\{\[]/.test(result)) {
+    					value = result;
+    				}
+    			} catch (e) {}
+
+    			value = converter.write ?
+    				converter.write(value, key) :
+    				encodeURIComponent(String(value))
+    					.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+
+    			key = encodeURIComponent(String(key))
+    				.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+    				.replace(/[\(\)]/g, escape);
+
+    			var stringifiedAttributes = '';
+    			for (var attributeName in attributes) {
+    				if (!attributes[attributeName]) {
+    					continue;
+    				}
+    				stringifiedAttributes += '; ' + attributeName;
+    				if (attributes[attributeName] === true) {
+    					continue;
+    				}
+
+    				// Considers RFC 6265 section 5.2:
+    				// ...
+    				// 3.  If the remaining unparsed-attributes contains a %x3B (";")
+    				//     character:
+    				// Consume the characters of the unparsed-attributes up to,
+    				// not including, the first %x3B (";") character.
+    				// ...
+    				stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
+    			}
+
+    			return (document.cookie = key + '=' + value + stringifiedAttributes);
+    		}
+
+    		function get (key, json) {
+    			if (typeof document === 'undefined') {
+    				return;
+    			}
+
+    			var jar = {};
+    			// To prevent the for loop in the first place assign an empty array
+    			// in case there are no cookies at all.
+    			var cookies = document.cookie ? document.cookie.split('; ') : [];
+    			var i = 0;
+
+    			for (; i < cookies.length; i++) {
+    				var parts = cookies[i].split('=');
+    				var cookie = parts.slice(1).join('=');
+
+    				if (!json && cookie.charAt(0) === '"') {
+    					cookie = cookie.slice(1, -1);
+    				}
+
+    				try {
+    					var name = decode(parts[0]);
+    					cookie = (converter.read || converter)(cookie, name) ||
+    						decode(cookie);
+
+    					if (json) {
+    						try {
+    							cookie = JSON.parse(cookie);
+    						} catch (e) {}
+    					}
+
+    					jar[name] = cookie;
+
+    					if (key === name) {
+    						break;
+    					}
+    				} catch (e) {}
+    			}
+
+    			return key ? jar[key] : jar;
+    		}
+
+    		api.set = set;
+    		api.get = function (key) {
+    			return get(key, false /* read as raw */);
+    		};
+    		api.getJSON = function (key) {
+    			return get(key, true /* read as json */);
+    		};
+    		api.remove = function (key, attributes) {
+    			set(key, '', extend(attributes, {
+    				expires: -1
+    			}));
+    		};
+
+    		api.defaults = {};
+
+    		api.withConverter = init;
+
+    		return api;
+    	}
+
+    	return init(function () {});
+    }));
+    }(js_cookie));
+
+    var Cookies = js_cookie.exports;
+
+    //
+
+    const DEFAULT_COOKIE_TTL = 365; // Days.
+    // If this script is executing in a cross-origin iframe, the cookie must
+    // be set with SameSite=None and Secure=true. See
+    // https://web.dev/samesite-cookies-explained/ and
+    // https://tools.ietf.org/html/draft-west-cookie-incrementalism-00 for
+    // details on SameSite and cross-origin behavior.
+    const CROSS_ORIGIN_IFRAME = amIInsideACrossOriginIframe();
+    const DEFAULT_SECURE = (CROSS_ORIGIN_IFRAME ? true : false);
+    const DEFAULT_SAMESITE = (CROSS_ORIGIN_IFRAME ? 'None' : 'Lax');
+
+    function amIInsideACrossOriginIframe () {
+      try {
+        // Raises ReferenceError if window isn't defined, eg if executed
+        // outside a browser.
+        //
+        // If inside a cross-origin iframe, raises: Uncaught
+        // DOMException: Blocked a frame with origin "..." from
+        // accessing a cross-origin frame.
+        return !Boolean(window.top.location.href)
+      } catch (err) {
+        return true
+      }
+    }
+
+    class CookieStore {
+      constructor ({
+          ttl = DEFAULT_COOKIE_TTL,
+          secure = DEFAULT_SECURE,
+          sameSite = DEFAULT_SAMESITE} = {}) {
+        this.ttl = ttl;
+        this.secure = secure;
+        this.sameSite = sameSite;
+
+        return (async () => this)()
+      }
+
+      async get (key) {
+        const value = Cookies.get(key);
+        return typeof value === 'string' ? value : undefined
+      }
+
+      async set (key, value) {
+        Cookies.set(key, value, this._constructCookieParams());
+      }
+
+      async remove (key) {
+        Cookies.remove(key, this._constructCookieParams());
+      }
+
+      _constructCookieParams () {
+        return {
+          expires: this.ttl,
+          secure: this.secure,
+          sameSite: this.sameSite,
+        }
+      }
+    }
+
+    class Store {
+        constructor(dbName = 'keyval-store', storeName = 'keyval') {
+            this.storeName = storeName;
+            this._dbp = new Promise((resolve, reject) => {
+                const openreq = indexedDB.open(dbName, 1);
+                openreq.onerror = () => reject(openreq.error);
+                openreq.onsuccess = () => resolve(openreq.result);
+                // First time setup: create an empty object store
+                openreq.onupgradeneeded = () => {
+                    openreq.result.createObjectStore(storeName);
+                };
+            });
+        }
+        _withIDBStore(type, callback) {
+            return this._dbp.then(db => new Promise((resolve, reject) => {
+                const transaction = db.transaction(this.storeName, type);
+                transaction.oncomplete = () => resolve();
+                transaction.onabort = transaction.onerror = () => reject(transaction.error);
+                callback(transaction.objectStore(this.storeName));
+            }));
+        }
+    }
+    let store;
+    function getDefaultStore() {
+        if (!store)
+            store = new Store();
+        return store;
+    }
+    function get(key, store = getDefaultStore()) {
+        let req;
+        return store._withIDBStore('readonly', store => {
+            req = store.get(key);
+        }).then(() => req.result);
+    }
+    function set(key, value, store = getDefaultStore()) {
+        return store._withIDBStore('readwrite', store => {
+            store.put(value, key);
+        });
+    }
+    function del(key, store = getDefaultStore()) {
+        return store._withIDBStore('readwrite', store => {
+            store.delete(key);
+        });
+    }
+
+    //
+
+    const DEFAULT_DATABASE_NAME = 'ImmortalDB';
+    const DEFAULT_STORE_NAME = 'key-value-pairs';
+
+    class IndexedDbStore {
+      constructor (dbName = DEFAULT_DATABASE_NAME, storeName = DEFAULT_STORE_NAME) {
+        this.store = new Store(dbName, storeName);
+
+        return (async () => {
+          // Safari throws a SecurityError if IndexedDB.open() is called in a
+          // cross-origin iframe.
+          //
+          //   SecurityError: IDBFactory.open() called in an invalid security context
+          //
+          // Catch such and fail gracefully.
+          //
+          // TODO(grun): Update idb-keyval's Store class to fail gracefully in
+          // Safari. Push the fix(es) upstream.
+          try {
+            await this.store._dbp;
+          } catch (err) {
+            if (err.name === 'SecurityError') {
+              return null // Failed to open an IndexedDB database.
+            } else {
+              throw err
+            }
+          }
+
+          return this
+        })()
+      }
+
+      async get (key) {
+        const value = await get(key, this.store);
+        return typeof value === 'string' ? value : undefined
+      }
+
+      async set (key, value) {
+        await set(key, value, this.store);
+      }
+
+      async remove (key) {
+        await del(key, this.store);
+      }
+    }
+
+    //
+    // ImmortalDB - A resilient key-value store for browsers.
+    //
+    // Ansgar Grunseid
+    // grunseid.com
+    // grunseid@gmail.com
+    //
+    // License: MIT
+    //
+
+    class StorageApiWrapper {
+      constructor (store) {
+        this.store = store;
+
+        return (async () => this)()
+      }
+
+      async get (key) {
+        const value = this.store.getItem(key);
+        return typeof value === 'string' ? value : undefined
+      }
+
+      async set (key, value) {
+        this.store.setItem(key, value);
+      }
+
+      async remove (key) {
+        this.store.removeItem(key);
+      }
+    }
+
+    class LocalStorageStore extends StorageApiWrapper {
+      constructor () {
+        super(window.localStorage);
+      }
+    }
+
+    class SessionStorageStore extends StorageApiWrapper {
+      constructor () {
+        super(window.sessionStorage);
+      }
+    }
+
+    //
+
+    const cl = console.log;
+    const DEFAULT_KEY_PREFIX = '_immortal|';
+    const WINDOW_IS_DEFINED = (typeof window !== 'undefined');
+
+    // Stores must implement asynchronous constructor, get(), set(), and
+    // remove() methods.
+    const DEFAULT_STORES = [CookieStore];
+    try {
+      if (WINDOW_IS_DEFINED && window.indexedDB) {
+        DEFAULT_STORES.push(IndexedDbStore);
+      }
+    } catch (err) {}
+
+    try {
+      if (WINDOW_IS_DEFINED && window.localStorage) {
+        DEFAULT_STORES.push(LocalStorageStore);
+      }
+    } catch (err) {}
+
+    function arrayGet (arr, index, _default = null) {
+      if (index in arr) {
+        return arr[index]
+      }
+      return _default
+    }
+
+    function countUniques (iterable) {
+      // A Map must be used instead of an Object because JavaScript is a
+      // buttshit language and all Object keys are serialized to strings.
+      // Thus undefined becomes 'undefined', null becomes 'null', etc. Then,
+      // in turn, 'undefined' can't be differentiated from undefined, null
+      // from 'null', etc, and countUniques([null, 'null']) would
+      // incorrectly return {'null': 2} instead of {null: 1, 'null': 1}.
+      //
+      // Unfortunately this Object behavior precludes the use of
+      // lodash.countBy() and similar methods which count with Objects
+      // instead of Maps.
+      const m = new Map();
+      let eles = iterable.slice();
+
+      for (const ele of eles) {
+        let count = 0;
+        for (const obj of eles) {
+          if (ele === obj) {
+            count += 1;
+          }
+        }
+
+        if (count > 0) {
+          m.set(ele, count);
+          eles = eles.filter(obj => obj !== ele);
+        }
+      }
+
+      return m
+    }
+
+    class ImmortalStorage {
+      constructor (stores = DEFAULT_STORES) {
+        this.stores = [];
+
+        // Initialize stores asynchronously. Accept both instantiated store
+        // objects and uninstantiated store classes. If the latter,
+        // implicitly instantiate instances thereof in this constructor.
+        //
+        // This constructor must accept both instantiated store objects and
+        // uninstantiated store classes because it's impossible to export
+        // ImmortalStore if it only took store objects initialized
+        // asynchronously. Like:
+        //
+        //   ;(async () => {
+        //       const cookieStore = await CookieStore()
+        //       const ImmortalDB = new ImmortalStorage([cookieStore])
+        //       export { ImmortalDB }  // <----- Doesn't work.
+        //   })
+        //
+        // So to export a synchronous ImmortalStorage class, datastore
+        // classes (whose definitions are synchronous) must be accepted in
+        // addition to instantiated store objects.
+        this.onReady = (async () => {
+          this.stores = (await Promise.all(
+            stores.map(async StoreClassOrInstance => {
+              if (typeof StoreClassOrInstance === 'object') { // Store instance.
+                return StoreClassOrInstance
+              } else { // Store class.
+                try {
+                  return await new StoreClassOrInstance() // Instantiate instance.
+                } catch (err) {
+                  // TODO(grun): Log (where?) that the <Store> constructor Promise
+                  // failed.
+                  return null
+                }
+              }
+            }),
+          )).filter(Boolean);
+        })();
+      }
+
+      async get (key, _default = null) {
+        await this.onReady;
+
+        const prefixedKey = `${DEFAULT_KEY_PREFIX}${key}`;
+
+        const values = await Promise.all(
+          this.stores.map(async store => {
+            try {
+              return await store.get(prefixedKey)
+            } catch (err) {
+              cl(err);
+            }
+          }),
+        );
+
+        const counted = Array.from(countUniques(values).entries());
+        counted.sort((a, b) => a[1] <= b[1]);
+
+        let value;
+        const [firstValue, firstCount] = arrayGet(counted, 0, [undefined, 0]);
+        const [secondValue, secondCount] = arrayGet(counted, 1, [undefined, 0]);
+        if (
+          firstCount > secondCount ||
+          (firstCount === secondCount && firstValue !== undefined)
+        ) {
+          value = firstValue;
+        } else {
+          value = secondValue;
+        }
+
+        if (value !== undefined) {
+          await this.set(key, value);
+          return value
+        } else {
+          await this.remove(key);
+          return _default
+        }
+      }
+
+      async set (key, value) {
+        await this.onReady;
+
+        key = `${DEFAULT_KEY_PREFIX}${key}`;
+
+        await Promise.all(
+          this.stores.map(async store => {
+            try {
+              await store.set(key, value);
+            } catch (err) {
+              cl(err);
+            }
+          }),
+        );
+
+        return value
+      }
+
+      async remove (key) {
+        await this.onReady;
+
+        key = `${DEFAULT_KEY_PREFIX}${key}`;
+
+        await Promise.all(
+          this.stores.map(async store => {
+            try {
+              await store.remove(key);
+            } catch (err) {
+              cl(err);
+            }
+          }),
+        );
+      }
+    }
+
+    const ImmortalDB = new ImmortalStorage();
+
+    var index = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        ImmortalDB: ImmortalDB,
+        ImmortalStorage: ImmortalStorage,
+        CookieStore: CookieStore,
+        IndexedDbStore: IndexedDbStore,
+        LocalStorageStore: LocalStorageStore,
+        SessionStorageStore: SessionStorageStore,
+        DEFAULT_STORES: DEFAULT_STORES,
+        DEFAULT_KEY_PREFIX: DEFAULT_KEY_PREFIX
+    });
+
+    return ConnectorInside;
+
+})();

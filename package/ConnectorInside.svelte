@@ -1,11 +1,11 @@
 <script >// svelte stuff
-import { onMount } from 'svelte';
+import { onMount, createEventDispatcher } from 'svelte';
 import { fade } from 'svelte/transition';
 import { connectToChild } from 'penpal';
 import IconButton from './components/WalletSelectorIcons.svelte';
 import Logo from './assets/Logo.svelte';
 export let wallet; // portal to the wallet
-export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sveltekit/';
+export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/';
 // flex dimensions
 export let topOffsetHeight = 0;
 export let topOffsetWidth = 0;
@@ -14,6 +14,7 @@ export let iframeParentWidth = 0;
 let iframeOffsetWidth;
 export let show;
 export let hide;
+const dispatch = createEventDispatcher();
 let src;
 let placeholder = 'Enter Wallet Url';
 let iframe;
@@ -72,9 +73,11 @@ async function handleIframeLoad() {
             },
             walletReady() {
                 wallet = pending;
+                dispatch('walletReady', wallet);
                 // overwrite any other arweave wallets on the window object
                 // @ts-ignore
                 window.arweaveWallet = wallet.arweaveWalletAPI;
+                return true;
             }
         }
     });

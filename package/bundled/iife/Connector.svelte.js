@@ -1,4 +1,5 @@
-var Connector = (function () {
+this.Connector = this.Connector || {};
+this.Connector.svelte = (function () {
     'use strict';
 
     function noop() { }
@@ -2297,7 +2298,7 @@ var Connector = (function () {
     	let popupIcon;
     	let connectionIcon;
     	let { wallet } = $$props;
-    	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sveltekit/' } = $$props;
+    	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/' } = $$props;
     	let src = inputUrl;
     	let iframe;
     	let focused;

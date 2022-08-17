@@ -1,8 +1,6 @@
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Connector = factory());
-})(this, (function () { 'use strict';
+this.Connector = this.Connector || {};
+this.Connector.svelte = (function () {
+    'use strict';
 
     function noop() { }
     const identity = x => x;
@@ -2300,7 +2298,7 @@
     	let popupIcon;
     	let connectionIcon;
     	let { wallet } = $$props;
-    	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sveltekit/' } = $$props;
+    	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/' } = $$props;
     	let src = inputUrl;
     	let iframe;
     	let focused;
@@ -2431,4 +2429,4 @@
 
     return Connector;
 
-}));
+})();
