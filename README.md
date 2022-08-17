@@ -11,24 +11,23 @@ You can use the Wallet as an ES Module, IIFE, or UMD module.
 For example, in your client side (browser) code, you can import an ES module and mount it to the DOM using `new`. Pass it the URL where to load the Wallet, then set your wallet object to be the event detail returned when the wallet is ready.
 
 ```js
+// see ./src/routes/vanilla.svelte
 
-import Web3WalletMenu from '@peerpiper/web3-wallet-connector/bundled/es/Connector.svelte.js
+let wallet, signature;
 
-let wallet
-
-const connector = new Web3WalletMenu({
+const menu = new Web3WalletMenu({
 	target: document.body,
 	props: {
-		inputUrl: 'https://peerpiper.github.io/iframe-wallet-sdk/'; // default
+		inputUrl: 'https://peerpiper.github.io/iframe-wallet-sdk/' // default
+	}
 });
 
-connector.$on("walletReady", async(event) => {
-	wallet = event.detail
+menu.$on('walletReady', async (event) => {
+	wallet = event.detail.wallet;
 
 	// now you can use wallet
-	const signature = await wallet.ed25519.sign(someData)
-})
-
+	signature = await wallet.ed25519.sign({ someData: 'some data' });
+});
 ```
 
 ## Svelte Bindings
