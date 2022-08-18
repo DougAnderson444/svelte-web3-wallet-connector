@@ -1,2 +1,2 @@
-export { Web3WalletMenu } from './Web3WalletMenu.svelte';
-export default Web3WalletConnector;
+export { default as Web3WalletMenu } from './Web3WalletMenu.svelte';
+export { default as default } from './Web3WalletMenu.svelte';
