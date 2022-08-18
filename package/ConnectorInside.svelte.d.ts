@@ -1,7 +1,7 @@
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
     props: {
-        wallet: any;
+        wallet?: any;
         inputUrl?: string;
         topOffsetHeight?: number;
         topOffsetWidth?: number;

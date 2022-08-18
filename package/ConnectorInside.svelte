@@ -4,7 +4,7 @@ import { fade } from 'svelte/transition';
 import { connectToChild } from 'penpal';
 import IconButton from './components/WalletSelectorIcons.svelte';
 import Logo from './assets/Logo.svelte';
-export let wallet; // portal to the wallet
+export let wallet = null;
 export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/';
 // flex dimensions
 export let topOffsetHeight = 0;
@@ -72,8 +72,8 @@ async function handleIframeLoad() {
                 hide();
             },
             walletReady() {
-                wallet = pending;
-                dispatch('walletReady', wallet);
+                wallet = pending; // when using svelte bind:wallet
+                dispatch('walletReady', { wallet }); // when using vanilla JS
                 // overwrite any other arweave wallets on the window object
                 // @ts-ignore
                 window.arweaveWallet = wallet.arweaveWalletAPI;
@@ -83,7 +83,6 @@ async function handleIframeLoad() {
     });
     pending = await connection.promise;
     show();
-    // console.log({ pending });
 }
 const connect = () => {
     if (src === inputUrl)

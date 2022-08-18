@@ -2474,7 +2474,7 @@ const INPUT_URL = 'INPUT_URL';
 function instance$1($$self, $$props, $$invalidate) {
 	let popupIcon;
 	let connectionIcon;
-	let { wallet } = $$props;
+	let { wallet = null } = $$props;
 	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/' } = $$props;
 	let { topOffsetHeight = 0 } = $$props;
 	let { topOffsetWidth = 0 } = $$props;

@@ -1649,7 +1649,7 @@ function add_css(target) {
 	append_styles(target, "svelte-1jxvnse", "div.svelte-1jxvnse{--spacing:1em}.connector-container.svelte-1jxvnse{padding:1.618em}div.svelte-1jxvnse{--background:#161616}.top.svelte-1jxvnse{display:flex;justify-content:space-between;align-items:center}iframe.svelte-1jxvnse{border:none;width:100%;height:100%}.iframe.svelte-1jxvnse{display:flex;height:100%}.logo.svelte-1jxvnse{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url.svelte-1jxvnse{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-1jxvnse{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-1jxvnse{display:flex}.actions.svelte-1jxvnse:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-1jxvnse{opacity:0.9;color:#e0f7fa}.connected.svelte-1jxvnse{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-1jxvnse{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-1jxvnse{display:flex;flex-direction:column;width:100%}input.svelte-1jxvnse{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:15ch}");
 }
 
-// (133:3) {#if wallet?.address || inputUrl}
+// (132:3) {#if wallet?.address || inputUrl}
 function create_if_block(ctx) {
 	let div;
 	let iconbutton;
@@ -1704,7 +1704,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (149:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
+// (148:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
 function create_default_slot(ctx) {
 	let span;
 
@@ -1965,7 +1965,7 @@ const INPUT_URL = 'INPUT_URL';
 function instance($$self, $$props, $$invalidate) {
 	let popupIcon;
 	let connectionIcon;
-	let { wallet } = $$props;
+	let { wallet = null } = $$props;
 	let { inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/' } = $$props;
 	let { topOffsetHeight = 0 } = $$props;
 	let { topOffsetWidth = 0 } = $$props;
@@ -2036,8 +2036,8 @@ function instance($$self, $$props, $$invalidate) {
 					hide();
 				},
 				walletReady() {
-					$$invalidate(0, wallet = pending);
-					dispatch('walletReady', wallet);
+					$$invalidate(0, wallet = pending); // when using svelte bind:wallet
+					dispatch('walletReady', { wallet }); // when using vanilla JS
 
 					// overwrite any other arweave wallets on the window object
 					// @ts-ignore
@@ -2050,7 +2050,7 @@ function instance($$self, $$props, $$invalidate) {
 
 		pending = await connection.promise;
 		show();
-	} // console.log({ pending });
+	}
 
 	const connect = () => {
 		if (src === inputUrl) return;
