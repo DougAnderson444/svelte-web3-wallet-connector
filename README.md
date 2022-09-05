@@ -37,12 +37,12 @@ menu.$on('walletReady', async (event) => {
 Import the Svelte component into your project:
 
 ```js
-import { Web3WalletConnector } from "@peerpiper/svelte-web3-wallet-connector"
+import { Web3WalletMenu } from "@peerpiper/svelte-web3-wallet-connector"
 
 let wallet
 let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/'; // the default URL, can be anywhere
 
-<Web3WalletConnector
+<Web3WalletMenu
 	{inputUrl}
 	on:walletReady={(e) => {
 		wallet = e.detail.wallet;
