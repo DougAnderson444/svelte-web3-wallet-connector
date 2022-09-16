@@ -77,7 +77,7 @@
 		right: 0;
 		height: 15%;
 		width: 0; /* 0 width - change this with JavaScript */
-		z-index: 10;
+		z-index: 50;
 		background-color: #111;
 		overflow-x: inherit; /* Disable horizontal scroll */
 		padding-top: 30px;

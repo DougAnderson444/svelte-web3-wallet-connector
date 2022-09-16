@@ -4,6 +4,12 @@ Embed this Connector on your website to enable your visitors to use Web3 on your
 
 Your visitors get to choose their wallet, so the integration is simple for you.
 
+## Install Latest Version
+
+```bash
+npm i github:PeerPiper/web3-wallet-connector
+```
+
 ## Vanilla JS Bindings
 
 You can use the Wallet as an ES Module, IIFE, or UMD module.
@@ -37,12 +43,12 @@ menu.$on('walletReady', async (event) => {
 Import the Svelte component into your project:
 
 ```js
-import { Web3WalletConnector } from "@peerpiper/svelte-web3-wallet-connector"
+import { Web3WalletMenu } from "@peerpiper/web3-wallet-connector"
 
 let wallet
 let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/'; // the default URL, can be anywhere
 
-<Web3WalletConnector
+<Web3WalletMenu
 	{inputUrl}
 	on:walletReady={(e) => {
 		wallet = e.detail.wallet;
@@ -65,7 +71,7 @@ The wallet Frontend is written in Svelte and easy to use:
 Step 1: Install the waller connector:
 
 ```bash
-npm i github:@peerpiper/web3-wallet-connector
+npm i github:PeerPiper/web3-wallet-connector
 ```
 
 Step 2: Load the Wallet component
