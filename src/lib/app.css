@@ -1,5 +1,4 @@
 html {
-	background: rgb(241, 241, 241);
 	/* box-sizing: border-box; */
 	line-height: 2;
 	scroll-snap-type: y mandatory;
@@ -24,7 +23,6 @@ body {
 *:after {
 	box-sizing: inherit;
 }
-
 
 .no-scrollbar {
 	scrollbar-width: none;
