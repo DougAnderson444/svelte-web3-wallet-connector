@@ -1,6 +1,4 @@
 <script>
-	import './app.css';
-
 	import { onMount } from 'svelte';
 	import MenuWrapper from './MenuWrapper.svelte';
 	import ConnectorInside from './ConnectorInside.svelte';

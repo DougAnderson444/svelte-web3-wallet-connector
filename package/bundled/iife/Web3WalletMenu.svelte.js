@@ -2755,7 +2755,7 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (19:1) <MenuWrapper let:openNav let:hideNav>
+    // (17:1) <MenuWrapper let:openNav let:hideNav>
     function create_default_slot(ctx) {
     	let connectorinside;
     	let updating_wallet;
