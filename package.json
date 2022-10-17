@@ -41,7 +41,7 @@
 	"dependencies": {
 		"immortal-db": "^1.1.0",
 		"penpal": "^6.2.1",
-		"svelte-drag": "^2.4.0"
+		"@neodrag/svelte": "^1.2.3"
 	},
 	"repository": {
 		"type": "git",
