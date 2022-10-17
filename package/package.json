@@ -1,6 +1,6 @@
 {
   "name": "@peerpiper/web3-wallet-connector",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "index.js",
   "module": "index.js",
   "devDependencies": {
@@ -29,7 +29,7 @@
   "dependencies": {
     "immortal-db": "^1.1.0",
     "penpal": "^6.2.1",
-    "svelte-drag": "^2.4.0"
+    "@neodrag/svelte": "^1.2.3"
   },
   "repository": {
     "type": "git",

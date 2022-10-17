@@ -3,7 +3,7 @@
 	import MenuWrapper from './MenuWrapper.svelte';
 	import ConnectorInside from './ConnectorInside.svelte';
 
-	export let inputUrl;
+	export let inputUrl = null;
 	export let wallet = null;
 
 	let mounted;
@@ -14,7 +14,14 @@
 </script>
 
 {#if mounted}
-	<MenuWrapper let:openNav let:hideNav>
-		<ConnectorInside bind:wallet {inputUrl} show={openNav} hide={hideNav} on:walletReady />
+	<MenuWrapper let:openNav let:hideNav let:saveInputURL {inputUrl} let:inputUrl>
+		<ConnectorInside
+			bind:wallet
+			show={openNav}
+			hide={hideNav}
+			on:walletReady
+			{inputUrl}
+			on:inputUrl={saveInputURL}
+		/>
 	</MenuWrapper>
 {/if}

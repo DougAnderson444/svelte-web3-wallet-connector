@@ -12,6 +12,7 @@ declare const __propDef: {
     };
     events: {
         walletReady: CustomEvent<any>;
+        inputUrl: CustomEvent<any>;
     } & {
         [evt: string]: CustomEvent<any>;
     };

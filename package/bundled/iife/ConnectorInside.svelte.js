@@ -1655,24 +1655,24 @@ this.ConnectorInside.svelte = (function () {
     const { window: window_1 } = globals;
 
     function add_css(target) {
-    	append_styles(target, "svelte-1jxvnse", "div.svelte-1jxvnse{--spacing:1em}.connector-container.svelte-1jxvnse{padding:1.618em}div.svelte-1jxvnse{--background:#161616}.top.svelte-1jxvnse{display:flex;justify-content:space-between;align-items:center}iframe.svelte-1jxvnse{border:none;width:100%;height:100%}.iframe.svelte-1jxvnse{display:flex;height:100%}.logo.svelte-1jxvnse{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url.svelte-1jxvnse{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-1jxvnse{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-1jxvnse{display:flex}.actions.svelte-1jxvnse:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-1jxvnse{opacity:0.9;color:#e0f7fa}.connected.svelte-1jxvnse{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-1jxvnse{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-1jxvnse{display:flex;flex-direction:column;width:100%}input.svelte-1jxvnse{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:15ch}");
+    	append_styles(target, "svelte-12a3ajw", "div.svelte-12a3ajw{--spacing:1em}.connector-container.svelte-12a3ajw{padding:1.618em}div.svelte-12a3ajw{--background:#161616}.top.svelte-12a3ajw{display:flex;justify-content:space-between;align-items:center}iframe.svelte-12a3ajw{border:none;width:100%;height:100%}.iframe.svelte-12a3ajw{display:flex;height:100%;min-height:500px}.logo.svelte-12a3ajw{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url.svelte-12a3ajw{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-12a3ajw{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-12a3ajw{display:flex}.actions.svelte-12a3ajw:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-12a3ajw{opacity:0.9;color:#e0f7fa}.connected.svelte-12a3ajw{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-12a3ajw{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-12a3ajw{display:flex;flex-direction:column;width:100%}input.svelte-12a3ajw{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:15ch}");
     }
 
-    // (132:3) {#if wallet?.address || inputUrl}
+    // (120:3) {#if wallet?.address || inputUrl}
     function create_if_block(ctx) {
     	let div;
     	let iconbutton;
     	let div_class_value;
     	let div_transition;
     	let current;
-    	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[12] } });
-    	iconbutton.$on("click", /*togglePopup*/ ctx[15]);
+    	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[11] } });
+    	iconbutton.$on("click", /*togglePopup*/ ctx[14]);
 
     	return {
     		c() {
     			div = element("div");
     			create_component(iconbutton.$$.fragment);
-    			attr(div, "class", div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1jxvnse"));
+    			attr(div, "class", div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-12a3ajw"));
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -1681,10 +1681,10 @@ this.ConnectorInside.svelte = (function () {
     		},
     		p(ctx, dirty) {
     			const iconbutton_changes = {};
-    			if (dirty & /*popupIcon*/ 4096) iconbutton_changes.icon = /*popupIcon*/ ctx[12];
+    			if (dirty & /*popupIcon*/ 2048) iconbutton_changes.icon = /*popupIcon*/ ctx[11];
     			iconbutton.$set(iconbutton_changes);
 
-    			if (!current || dirty & /*wallet*/ 1 && div_class_value !== (div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1jxvnse"))) {
+    			if (!current || dirty & /*wallet*/ 1 && div_class_value !== (div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-12a3ajw"))) {
     				attr(div, "class", div_class_value);
     			}
     		},
@@ -1713,11 +1713,11 @@ this.ConnectorInside.svelte = (function () {
     	};
     }
 
-    // (148:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
+    // (136:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
     function create_default_slot(ctx) {
     	let span;
 
-    	let t_value = (/*data*/ ctx[10].loading || !/*src*/ ctx[6]
+    	let t_value = (/*data*/ ctx[9].loading || !/*src*/ ctx[7]
     	? 'Loading...'
     	: 'Load') + "";
 
@@ -1731,20 +1731,20 @@ this.ConnectorInside.svelte = (function () {
 
     			attr(span, "class", span_class_value = "" + (null_to_empty((/*wallet*/ ctx[0]?.address)
     			? ' connected '
-    			: ' disconnected ') + " svelte-1jxvnse"));
+    			: ' disconnected ') + " svelte-12a3ajw"));
     		},
     		m(target, anchor) {
     			insert(target, span, anchor);
     			append(span, t);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*data, src*/ 1088 && t_value !== (t_value = (/*data*/ ctx[10].loading || !/*src*/ ctx[6]
+    			if (dirty & /*data, src*/ 640 && t_value !== (t_value = (/*data*/ ctx[9].loading || !/*src*/ ctx[7]
     			? 'Loading...'
     			: 'Load') + "")) set_data(t, t_value);
 
     			if (dirty & /*wallet*/ 1 && span_class_value !== (span_class_value = "" + (null_to_empty((/*wallet*/ ctx[0]?.address)
     			? ' connected '
-    			: ' disconnected ') + " svelte-1jxvnse"))) {
+    			: ' disconnected ') + " svelte-12a3ajw"))) {
     				attr(span, "class", span_class_value);
     			}
     		},
@@ -1785,13 +1785,13 @@ this.ConnectorInside.svelte = (function () {
 
     	iconbutton = new WalletSelectorIcons({
     			props: {
-    				icon: /*connectionIcon*/ ctx[11],
+    				icon: /*connectionIcon*/ ctx[10],
     				$$slots: { default: [create_default_slot] },
     				$$scope: { ctx }
     			}
     		});
 
-    	iconbutton.$on("click", /*click_handler*/ ctx[23]);
+    	iconbutton.$on("click", /*click_handler*/ ctx[22]);
 
     	return {
     		c() {
@@ -1814,33 +1814,33 @@ this.ConnectorInside.svelte = (function () {
     			t4 = space();
     			div5 = element("div");
     			iframe_1 = element("iframe");
-    			attr(div0, "class", "actions logo svelte-1jxvnse");
+    			attr(div0, "class", "actions logo svelte-12a3ajw");
     			attr(a, "href", "https://PeerPiper.io");
     			attr(a, "target", "_blank");
     			attr(a, "rel", "noreferrer");
-    			attr(input, "class", "url svelte-1jxvnse");
+    			attr(input, "class", "url svelte-12a3ajw");
     			attr(input, "placeholder", placeholder);
-    			attr(span, "class", "green-line svelte-1jxvnse");
-    			attr(div1, "class", "url-input-container svelte-1jxvnse");
+    			attr(span, "class", "green-line svelte-12a3ajw");
+    			attr(div1, "class", "url-input-container svelte-12a3ajw");
 
-    			attr(div2, "class", div2_class_value = "" + (null_to_empty((/*data*/ ctx[10]?.loading)
+    			attr(div2, "class", div2_class_value = "" + (null_to_empty((/*data*/ ctx[9]?.loading)
     			? 'action dim'
     			: /*wallet*/ ctx[0]?.address
     				? ' connected '
-    				: ' disconnected ') + " svelte-1jxvnse"));
+    				: ' disconnected ') + " svelte-12a3ajw"));
 
-    			attr(div3, "class", "actions svelte-1jxvnse");
-    			attr(div4, "class", "top svelte-1jxvnse");
+    			attr(div3, "class", "actions svelte-12a3ajw");
+    			attr(div4, "class", "top svelte-12a3ajw");
     			set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
-    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[24].call(div4));
+    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[23].call(div4));
     			attr(iframe_1, "title", "Web Wallet");
-    			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[6])) attr(iframe_1, "src", iframe_1_src_value);
+    			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[7])) attr(iframe_1, "src", iframe_1_src_value);
     			attr(iframe_1, "allow", "clipboard-read 'self' 'src'; clipboard-write 'self' 'src';");
-    			attr(iframe_1, "class", "svelte-1jxvnse");
-    			attr(div5, "class", "iframe svelte-1jxvnse");
+    			attr(iframe_1, "class", "svelte-12a3ajw");
+    			attr(div5, "class", "iframe svelte-12a3ajw");
     			set_style(div5, "height", "calc(" + /*iframeParentHeight*/ ctx[4] + "px + 18px)");
-    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[26].call(div5));
-    			attr(div6, "class", "connector-container svelte-1jxvnse");
+    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[25].call(div5));
+    			attr(div6, "class", "connector-container svelte-12a3ajw");
     		},
     		m(target, anchor) {
     			insert(target, div6, anchor);
@@ -1860,31 +1860,26 @@ this.ConnectorInside.svelte = (function () {
     			append(div3, t3);
     			append(div3, div2);
     			mount_component(iconbutton, div2, null);
-    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[24].bind(div4));
+    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[23].bind(div4));
     			append(div6, t4);
     			append(div6, div5);
     			append(div5, iframe_1);
-    			/*iframe_1_binding*/ ctx[25](iframe_1);
-    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[26].bind(div5));
+    			/*iframe_1_binding*/ ctx[24](iframe_1);
+    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[25].bind(div5));
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen(window_1, "keydown", /*handleKeydown*/ ctx[16]),
-    					listen(input, "focus", /*focus_handler*/ ctx[20]),
-    					listen(input, "blur", /*blur_handler*/ ctx[21]),
-    					listen(input, "input", /*input_input_handler*/ ctx[22]),
-    					listen(input, "input", function () {
-    						if (is_function(/*saveInputURL*/ ctx[8])) /*saveInputURL*/ ctx[8].apply(this, arguments);
-    					})
+    					listen(window_1, "keydown", /*handleKeydown*/ ctx[15]),
+    					listen(input, "focus", /*focus_handler*/ ctx[19]),
+    					listen(input, "blur", /*blur_handler*/ ctx[20]),
+    					listen(input, "input", /*input_input_handler*/ ctx[21])
     				];
 
     				mounted = true;
     			}
     		},
-    		p(new_ctx, [dirty]) {
-    			ctx = new_ctx;
-
+    		p(ctx, [dirty]) {
     			if (dirty & /*inputUrl*/ 2 && input.value !== /*inputUrl*/ ctx[1]) {
     				set_input_value(input, /*inputUrl*/ ctx[1]);
     			}
@@ -1913,19 +1908,19 @@ this.ConnectorInside.svelte = (function () {
     			}
 
     			const iconbutton_changes = {};
-    			if (dirty & /*connectionIcon*/ 2048) iconbutton_changes.icon = /*connectionIcon*/ ctx[11];
+    			if (dirty & /*connectionIcon*/ 1024) iconbutton_changes.icon = /*connectionIcon*/ ctx[10];
 
-    			if (dirty & /*$$scope, wallet, data, src*/ 1073742913) {
+    			if (dirty & /*$$scope, wallet, data, src*/ 268436097) {
     				iconbutton_changes.$$scope = { dirty, ctx };
     			}
 
     			iconbutton.$set(iconbutton_changes);
 
-    			if (!current || dirty & /*data, wallet*/ 1025 && div2_class_value !== (div2_class_value = "" + (null_to_empty((/*data*/ ctx[10]?.loading)
+    			if (!current || dirty & /*data, wallet*/ 513 && div2_class_value !== (div2_class_value = "" + (null_to_empty((/*data*/ ctx[9]?.loading)
     			? 'action dim'
     			: /*wallet*/ ctx[0]?.address
     				? ' connected '
-    				: ' disconnected ') + " svelte-1jxvnse"))) {
+    				: ' disconnected ') + " svelte-12a3ajw"))) {
     				attr(div2, "class", div2_class_value);
     			}
 
@@ -1933,7 +1928,7 @@ this.ConnectorInside.svelte = (function () {
     				set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
     			}
 
-    			if (!current || dirty & /*src*/ 64 && !src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[6])) {
+    			if (!current || dirty & /*src*/ 128 && !src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[7])) {
     				attr(iframe_1, "src", iframe_1_src_value);
     			}
 
@@ -1960,7 +1955,7 @@ this.ConnectorInside.svelte = (function () {
     			if (if_block) if_block.d();
     			destroy_component(iconbutton);
     			div4_resize_listener();
-    			/*iframe_1_binding*/ ctx[25](null);
+    			/*iframe_1_binding*/ ctx[24](null);
     			div5_resize_listener();
     			mounted = false;
     			run_all(dispose);
@@ -1969,7 +1964,6 @@ this.ConnectorInside.svelte = (function () {
     }
 
     let placeholder = 'Enter Wallet Url';
-    const INPUT_URL = 'INPUT_URL';
 
     function instance($$self, $$props, $$invalidate) {
     	let popupIcon;
@@ -1987,7 +1981,6 @@ this.ConnectorInside.svelte = (function () {
     	let src;
     	let iframe;
     	let focused;
-    	let saveInputURL;
 
     	const data = {
     		loading: true, // load right away
@@ -1996,33 +1989,12 @@ this.ConnectorInside.svelte = (function () {
 
     	// cache user's preferred wallet URL to their browser
     	onMount(async () => {
-    		const { ImmortalDB } = await Promise.resolve().then(function () { return index; });
-
-    		$$invalidate(8, saveInputURL = async () => {
-    			try {
-    				await ImmortalDB.set(INPUT_URL, src);
-    			} catch(error) {
-    				console.warn('Did not save', src, error);
-    			}
-    		});
-
-    		// check for URL
-    		try {
-    			const storedValue = await ImmortalDB.get(INPUT_URL, null);
-
-    			if (storedValue) {
-    				$$invalidate(1, inputUrl = storedValue);
-    			}
-    		} catch(error) {
-    			console.warn('Did not get', error);
-    		}
-
     		connect();
     	});
 
     	async function handleIframeLoad() {
     		// console.log('Iframe loaded');
-    		$$invalidate(10, data.loading = false, data);
+    		$$invalidate(9, data.loading = false, data);
 
     		let pending;
 
@@ -2036,14 +2008,19 @@ this.ConnectorInside.svelte = (function () {
     				},
     				setIframeParentWidth(width) {
     					// console.log('Rx width', width);
-    					$$invalidate(17, iframeParentWidth = width);
+    					$$invalidate(16, iframeParentWidth = width);
     				},
     				show() {
     					show();
     				},
     				hide() {
+    					console.log('hiding', { hide });
     					hide();
     				},
+    				// walletReady gets called from wallet-sdk when
+    				// connectionsReady is called which is called when
+    				// loadedKeys is fired
+    				// which only happens when the keys are loaded
     				walletReady() {
     					$$invalidate(0, wallet = pending); // when using svelte bind:wallet
     					dispatch('walletReady', { wallet }); // when using vanilla JS
@@ -2051,6 +2028,16 @@ this.ConnectorInside.svelte = (function () {
     					// overwrite any other arweave wallets on the window object
     					// @ts-ignore
     					window.arweaveWallet = wallet.arweaveWalletAPI;
+
+    					if (wallet) {
+    						// hack: await 250 milliseconds
+    						setTimeout(
+    							() => {
+    								hide();
+    							},
+    							250
+    						);
+    					}
 
     					return true;
     				}
@@ -2063,9 +2050,10 @@ this.ConnectorInside.svelte = (function () {
 
     	const connect = () => {
     		if (src === inputUrl) return;
-    		$$invalidate(6, src = '');
-    		$$invalidate(6, src = inputUrl);
-    		$$invalidate(10, data.loading = true, data);
+    		$$invalidate(7, src = '');
+    		$$invalidate(7, src = inputUrl);
+    		$$invalidate(9, data.loading = true, data);
+    		dispatch('inputUrl', inputUrl); // when using vanilla JS
     	};
 
     	const disconnect = () => wallet.disconnect();
@@ -2075,8 +2063,8 @@ this.ConnectorInside.svelte = (function () {
     		if (event.key === 'Enter' && focused) connect();
     	}
 
-    	const focus_handler = () => $$invalidate(9, focused = true);
-    	const blur_handler = () => $$invalidate(9, focused = false);
+    	const focus_handler = () => $$invalidate(8, focused = true);
+    	const blur_handler = () => $$invalidate(8, focused = false);
 
     	function input_input_handler() {
     		inputUrl = this.value;
@@ -2097,7 +2085,7 @@ this.ConnectorInside.svelte = (function () {
     	function iframe_1_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			iframe = $$value;
-    			$$invalidate(7, iframe);
+    			$$invalidate(6, iframe);
     		});
     	}
 
@@ -2112,26 +2100,22 @@ this.ConnectorInside.svelte = (function () {
     		if ('topOffsetHeight' in $$props) $$invalidate(2, topOffsetHeight = $$props.topOffsetHeight);
     		if ('topOffsetWidth' in $$props) $$invalidate(3, topOffsetWidth = $$props.topOffsetWidth);
     		if ('iframeParentHeight' in $$props) $$invalidate(4, iframeParentHeight = $$props.iframeParentHeight);
-    		if ('iframeParentWidth' in $$props) $$invalidate(17, iframeParentWidth = $$props.iframeParentWidth);
-    		if ('show' in $$props) $$invalidate(18, show = $$props.show);
-    		if ('hide' in $$props) $$invalidate(19, hide = $$props.hide);
+    		if ('iframeParentWidth' in $$props) $$invalidate(16, iframeParentWidth = $$props.iframeParentWidth);
+    		if ('show' in $$props) $$invalidate(17, show = $$props.show);
+    		if ('hide' in $$props) $$invalidate(18, hide = $$props.hide);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*src, saveInputURL*/ 320) {
-    			src && saveInputURL && saveInputURL();
-    		}
-
-    		if ($$self.$$.dirty & /*iframe*/ 128) {
+    		if ($$self.$$.dirty & /*iframe*/ 64) {
     			iframe && iframe.addEventListener('load', handleIframeLoad);
     		}
 
     		if ($$self.$$.dirty & /*wallet*/ 1) {
-    			$$invalidate(12, popupIcon = (wallet?.keepPopup) ? 'close' : 'launch');
+    			$$invalidate(11, popupIcon = (wallet?.keepPopup) ? 'close' : 'launch');
     		}
 
     		if ($$self.$$.dirty & /*wallet*/ 1) {
-    			$$invalidate(11, connectionIcon = (wallet?.address) ? 'unplug' : 'plug');
+    			$$invalidate(10, connectionIcon = (wallet?.address) ? 'unplug' : 'plug');
     		}
 
     		if ($$self.$$.dirty & /*iframeOffsetWidth, wallet*/ 33) {
@@ -2146,9 +2130,8 @@ this.ConnectorInside.svelte = (function () {
     		topOffsetWidth,
     		iframeParentHeight,
     		iframeOffsetWidth,
-    		src,
     		iframe,
-    		saveInputURL,
+    		src,
     		focused,
     		data,
     		connectionIcon,
@@ -2186,564 +2169,14 @@ this.ConnectorInside.svelte = (function () {
     				topOffsetHeight: 2,
     				topOffsetWidth: 3,
     				iframeParentHeight: 4,
-    				iframeParentWidth: 17,
-    				show: 18,
-    				hide: 19
+    				iframeParentWidth: 16,
+    				show: 17,
+    				hide: 18
     			},
     			add_css
     		);
     	}
     }
-
-    var js_cookie = {exports: {}};
-
-    /*!
-     * JavaScript Cookie v2.2.1
-     * https://github.com/js-cookie/js-cookie
-     *
-     * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
-     * Released under the MIT license
-     */
-
-    (function (module, exports) {
-    (function (factory) {
-    	var registeredInModuleLoader;
-    	{
-    		module.exports = factory();
-    		registeredInModuleLoader = true;
-    	}
-    	if (!registeredInModuleLoader) {
-    		var OldCookies = window.Cookies;
-    		var api = window.Cookies = factory();
-    		api.noConflict = function () {
-    			window.Cookies = OldCookies;
-    			return api;
-    		};
-    	}
-    }(function () {
-    	function extend () {
-    		var i = 0;
-    		var result = {};
-    		for (; i < arguments.length; i++) {
-    			var attributes = arguments[ i ];
-    			for (var key in attributes) {
-    				result[key] = attributes[key];
-    			}
-    		}
-    		return result;
-    	}
-
-    	function decode (s) {
-    		return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);
-    	}
-
-    	function init (converter) {
-    		function api() {}
-
-    		function set (key, value, attributes) {
-    			if (typeof document === 'undefined') {
-    				return;
-    			}
-
-    			attributes = extend({
-    				path: '/'
-    			}, api.defaults, attributes);
-
-    			if (typeof attributes.expires === 'number') {
-    				attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
-    			}
-
-    			// We're using "expires" because "max-age" is not supported by IE
-    			attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
-    			try {
-    				var result = JSON.stringify(value);
-    				if (/^[\{\[]/.test(result)) {
-    					value = result;
-    				}
-    			} catch (e) {}
-
-    			value = converter.write ?
-    				converter.write(value, key) :
-    				encodeURIComponent(String(value))
-    					.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-
-    			key = encodeURIComponent(String(key))
-    				.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
-    				.replace(/[\(\)]/g, escape);
-
-    			var stringifiedAttributes = '';
-    			for (var attributeName in attributes) {
-    				if (!attributes[attributeName]) {
-    					continue;
-    				}
-    				stringifiedAttributes += '; ' + attributeName;
-    				if (attributes[attributeName] === true) {
-    					continue;
-    				}
-
-    				// Considers RFC 6265 section 5.2:
-    				// ...
-    				// 3.  If the remaining unparsed-attributes contains a %x3B (";")
-    				//     character:
-    				// Consume the characters of the unparsed-attributes up to,
-    				// not including, the first %x3B (";") character.
-    				// ...
-    				stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
-    			}
-
-    			return (document.cookie = key + '=' + value + stringifiedAttributes);
-    		}
-
-    		function get (key, json) {
-    			if (typeof document === 'undefined') {
-    				return;
-    			}
-
-    			var jar = {};
-    			// To prevent the for loop in the first place assign an empty array
-    			// in case there are no cookies at all.
-    			var cookies = document.cookie ? document.cookie.split('; ') : [];
-    			var i = 0;
-
-    			for (; i < cookies.length; i++) {
-    				var parts = cookies[i].split('=');
-    				var cookie = parts.slice(1).join('=');
-
-    				if (!json && cookie.charAt(0) === '"') {
-    					cookie = cookie.slice(1, -1);
-    				}
-
-    				try {
-    					var name = decode(parts[0]);
-    					cookie = (converter.read || converter)(cookie, name) ||
-    						decode(cookie);
-
-    					if (json) {
-    						try {
-    							cookie = JSON.parse(cookie);
-    						} catch (e) {}
-    					}
-
-    					jar[name] = cookie;
-
-    					if (key === name) {
-    						break;
-    					}
-    				} catch (e) {}
-    			}
-
-    			return key ? jar[key] : jar;
-    		}
-
-    		api.set = set;
-    		api.get = function (key) {
-    			return get(key, false /* read as raw */);
-    		};
-    		api.getJSON = function (key) {
-    			return get(key, true /* read as json */);
-    		};
-    		api.remove = function (key, attributes) {
-    			set(key, '', extend(attributes, {
-    				expires: -1
-    			}));
-    		};
-
-    		api.defaults = {};
-
-    		api.withConverter = init;
-
-    		return api;
-    	}
-
-    	return init(function () {});
-    }));
-    }(js_cookie));
-
-    var Cookies = js_cookie.exports;
-
-    //
-
-    const DEFAULT_COOKIE_TTL = 365; // Days.
-    // If this script is executing in a cross-origin iframe, the cookie must
-    // be set with SameSite=None and Secure=true. See
-    // https://web.dev/samesite-cookies-explained/ and
-    // https://tools.ietf.org/html/draft-west-cookie-incrementalism-00 for
-    // details on SameSite and cross-origin behavior.
-    const CROSS_ORIGIN_IFRAME = amIInsideACrossOriginIframe();
-    const DEFAULT_SECURE = (CROSS_ORIGIN_IFRAME ? true : false);
-    const DEFAULT_SAMESITE = (CROSS_ORIGIN_IFRAME ? 'None' : 'Lax');
-
-    function amIInsideACrossOriginIframe () {
-      try {
-        // Raises ReferenceError if window isn't defined, eg if executed
-        // outside a browser.
-        //
-        // If inside a cross-origin iframe, raises: Uncaught
-        // DOMException: Blocked a frame with origin "..." from
-        // accessing a cross-origin frame.
-        return !Boolean(window.top.location.href)
-      } catch (err) {
-        return true
-      }
-    }
-
-    class CookieStore {
-      constructor ({
-          ttl = DEFAULT_COOKIE_TTL,
-          secure = DEFAULT_SECURE,
-          sameSite = DEFAULT_SAMESITE} = {}) {
-        this.ttl = ttl;
-        this.secure = secure;
-        this.sameSite = sameSite;
-
-        return (async () => this)()
-      }
-
-      async get (key) {
-        const value = Cookies.get(key);
-        return typeof value === 'string' ? value : undefined
-      }
-
-      async set (key, value) {
-        Cookies.set(key, value, this._constructCookieParams());
-      }
-
-      async remove (key) {
-        Cookies.remove(key, this._constructCookieParams());
-      }
-
-      _constructCookieParams () {
-        return {
-          expires: this.ttl,
-          secure: this.secure,
-          sameSite: this.sameSite,
-        }
-      }
-    }
-
-    class Store {
-        constructor(dbName = 'keyval-store', storeName = 'keyval') {
-            this.storeName = storeName;
-            this._dbp = new Promise((resolve, reject) => {
-                const openreq = indexedDB.open(dbName, 1);
-                openreq.onerror = () => reject(openreq.error);
-                openreq.onsuccess = () => resolve(openreq.result);
-                // First time setup: create an empty object store
-                openreq.onupgradeneeded = () => {
-                    openreq.result.createObjectStore(storeName);
-                };
-            });
-        }
-        _withIDBStore(type, callback) {
-            return this._dbp.then(db => new Promise((resolve, reject) => {
-                const transaction = db.transaction(this.storeName, type);
-                transaction.oncomplete = () => resolve();
-                transaction.onabort = transaction.onerror = () => reject(transaction.error);
-                callback(transaction.objectStore(this.storeName));
-            }));
-        }
-    }
-    let store;
-    function getDefaultStore() {
-        if (!store)
-            store = new Store();
-        return store;
-    }
-    function get(key, store = getDefaultStore()) {
-        let req;
-        return store._withIDBStore('readonly', store => {
-            req = store.get(key);
-        }).then(() => req.result);
-    }
-    function set(key, value, store = getDefaultStore()) {
-        return store._withIDBStore('readwrite', store => {
-            store.put(value, key);
-        });
-    }
-    function del(key, store = getDefaultStore()) {
-        return store._withIDBStore('readwrite', store => {
-            store.delete(key);
-        });
-    }
-
-    //
-
-    const DEFAULT_DATABASE_NAME = 'ImmortalDB';
-    const DEFAULT_STORE_NAME = 'key-value-pairs';
-
-    class IndexedDbStore {
-      constructor (dbName = DEFAULT_DATABASE_NAME, storeName = DEFAULT_STORE_NAME) {
-        this.store = new Store(dbName, storeName);
-
-        return (async () => {
-          // Safari throws a SecurityError if IndexedDB.open() is called in a
-          // cross-origin iframe.
-          //
-          //   SecurityError: IDBFactory.open() called in an invalid security context
-          //
-          // Catch such and fail gracefully.
-          //
-          // TODO(grun): Update idb-keyval's Store class to fail gracefully in
-          // Safari. Push the fix(es) upstream.
-          try {
-            await this.store._dbp;
-          } catch (err) {
-            if (err.name === 'SecurityError') {
-              return null // Failed to open an IndexedDB database.
-            } else {
-              throw err
-            }
-          }
-
-          return this
-        })()
-      }
-
-      async get (key) {
-        const value = await get(key, this.store);
-        return typeof value === 'string' ? value : undefined
-      }
-
-      async set (key, value) {
-        await set(key, value, this.store);
-      }
-
-      async remove (key) {
-        await del(key, this.store);
-      }
-    }
-
-    //
-    // ImmortalDB - A resilient key-value store for browsers.
-    //
-    // Ansgar Grunseid
-    // grunseid.com
-    // grunseid@gmail.com
-    //
-    // License: MIT
-    //
-
-    class StorageApiWrapper {
-      constructor (store) {
-        this.store = store;
-
-        return (async () => this)()
-      }
-
-      async get (key) {
-        const value = this.store.getItem(key);
-        return typeof value === 'string' ? value : undefined
-      }
-
-      async set (key, value) {
-        this.store.setItem(key, value);
-      }
-
-      async remove (key) {
-        this.store.removeItem(key);
-      }
-    }
-
-    class LocalStorageStore extends StorageApiWrapper {
-      constructor () {
-        super(window.localStorage);
-      }
-    }
-
-    class SessionStorageStore extends StorageApiWrapper {
-      constructor () {
-        super(window.sessionStorage);
-      }
-    }
-
-    //
-
-    const cl = console.log;
-    const DEFAULT_KEY_PREFIX = '_immortal|';
-    const WINDOW_IS_DEFINED = (typeof window !== 'undefined');
-
-    // Stores must implement asynchronous constructor, get(), set(), and
-    // remove() methods.
-    const DEFAULT_STORES = [CookieStore];
-    try {
-      if (WINDOW_IS_DEFINED && window.indexedDB) {
-        DEFAULT_STORES.push(IndexedDbStore);
-      }
-    } catch (err) {}
-
-    try {
-      if (WINDOW_IS_DEFINED && window.localStorage) {
-        DEFAULT_STORES.push(LocalStorageStore);
-      }
-    } catch (err) {}
-
-    function arrayGet (arr, index, _default = null) {
-      if (index in arr) {
-        return arr[index]
-      }
-      return _default
-    }
-
-    function countUniques (iterable) {
-      // A Map must be used instead of an Object because JavaScript is a
-      // buttshit language and all Object keys are serialized to strings.
-      // Thus undefined becomes 'undefined', null becomes 'null', etc. Then,
-      // in turn, 'undefined' can't be differentiated from undefined, null
-      // from 'null', etc, and countUniques([null, 'null']) would
-      // incorrectly return {'null': 2} instead of {null: 1, 'null': 1}.
-      //
-      // Unfortunately this Object behavior precludes the use of
-      // lodash.countBy() and similar methods which count with Objects
-      // instead of Maps.
-      const m = new Map();
-      let eles = iterable.slice();
-
-      for (const ele of eles) {
-        let count = 0;
-        for (const obj of eles) {
-          if (ele === obj) {
-            count += 1;
-          }
-        }
-
-        if (count > 0) {
-          m.set(ele, count);
-          eles = eles.filter(obj => obj !== ele);
-        }
-      }
-
-      return m
-    }
-
-    class ImmortalStorage {
-      constructor (stores = DEFAULT_STORES) {
-        this.stores = [];
-
-        // Initialize stores asynchronously. Accept both instantiated store
-        // objects and uninstantiated store classes. If the latter,
-        // implicitly instantiate instances thereof in this constructor.
-        //
-        // This constructor must accept both instantiated store objects and
-        // uninstantiated store classes because it's impossible to export
-        // ImmortalStore if it only took store objects initialized
-        // asynchronously. Like:
-        //
-        //   ;(async () => {
-        //       const cookieStore = await CookieStore()
-        //       const ImmortalDB = new ImmortalStorage([cookieStore])
-        //       export { ImmortalDB }  // <----- Doesn't work.
-        //   })
-        //
-        // So to export a synchronous ImmortalStorage class, datastore
-        // classes (whose definitions are synchronous) must be accepted in
-        // addition to instantiated store objects.
-        this.onReady = (async () => {
-          this.stores = (await Promise.all(
-            stores.map(async StoreClassOrInstance => {
-              if (typeof StoreClassOrInstance === 'object') { // Store instance.
-                return StoreClassOrInstance
-              } else { // Store class.
-                try {
-                  return await new StoreClassOrInstance() // Instantiate instance.
-                } catch (err) {
-                  // TODO(grun): Log (where?) that the <Store> constructor Promise
-                  // failed.
-                  return null
-                }
-              }
-            }),
-          )).filter(Boolean);
-        })();
-      }
-
-      async get (key, _default = null) {
-        await this.onReady;
-
-        const prefixedKey = `${DEFAULT_KEY_PREFIX}${key}`;
-
-        const values = await Promise.all(
-          this.stores.map(async store => {
-            try {
-              return await store.get(prefixedKey)
-            } catch (err) {
-              cl(err);
-            }
-          }),
-        );
-
-        const counted = Array.from(countUniques(values).entries());
-        counted.sort((a, b) => a[1] <= b[1]);
-
-        let value;
-        const [firstValue, firstCount] = arrayGet(counted, 0, [undefined, 0]);
-        const [secondValue, secondCount] = arrayGet(counted, 1, [undefined, 0]);
-        if (
-          firstCount > secondCount ||
-          (firstCount === secondCount && firstValue !== undefined)
-        ) {
-          value = firstValue;
-        } else {
-          value = secondValue;
-        }
-
-        if (value !== undefined) {
-          await this.set(key, value);
-          return value
-        } else {
-          await this.remove(key);
-          return _default
-        }
-      }
-
-      async set (key, value) {
-        await this.onReady;
-
-        key = `${DEFAULT_KEY_PREFIX}${key}`;
-
-        await Promise.all(
-          this.stores.map(async store => {
-            try {
-              await store.set(key, value);
-            } catch (err) {
-              cl(err);
-            }
-          }),
-        );
-
-        return value
-      }
-
-      async remove (key) {
-        await this.onReady;
-
-        key = `${DEFAULT_KEY_PREFIX}${key}`;
-
-        await Promise.all(
-          this.stores.map(async store => {
-            try {
-              await store.remove(key);
-            } catch (err) {
-              cl(err);
-            }
-          }),
-        );
-      }
-    }
-
-    const ImmortalDB = new ImmortalStorage();
-
-    var index = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        ImmortalDB: ImmortalDB,
-        ImmortalStorage: ImmortalStorage,
-        CookieStore: CookieStore,
-        IndexedDbStore: IndexedDbStore,
-        LocalStorageStore: LocalStorageStore,
-        SessionStorageStore: SessionStorageStore,
-        DEFAULT_STORES: DEFAULT_STORES,
-        DEFAULT_KEY_PREFIX: DEFAULT_KEY_PREFIX
-    });
 
     return ConnectorInside;
 

@@ -753,320 +753,7 @@ this.Web3WalletMenu.svelte = (function () {
         }
     }
 
-    // src/memoize.js
-    function memoize(fn, options) {
-      var cache = options && options.cache ? options.cache : cacheDefault;
-      var serializer = options && options.serializer ? options.serializer : serializerDefault;
-      var strategy = options && options.strategy ? options.strategy : strategyDefault;
-      return strategy(fn, {
-        cache,
-        serializer
-      });
-    }
-    function isPrimitive(value) {
-      return value == null || typeof value === "number" || typeof value === "boolean";
-    }
-    function monadic(fn, cache, serializer, arg) {
-      var cacheKey = isPrimitive(arg) ? arg : serializer(arg);
-      var computedValue = cache.get(cacheKey);
-      if (typeof computedValue === "undefined") {
-        computedValue = fn.call(this, arg);
-        cache.set(cacheKey, computedValue);
-      }
-      return computedValue;
-    }
-    function variadic(fn, cache, serializer) {
-      var args = Array.prototype.slice.call(arguments, 3);
-      var cacheKey = serializer(args);
-      var computedValue = cache.get(cacheKey);
-      if (typeof computedValue === "undefined") {
-        computedValue = fn.apply(this, args);
-        cache.set(cacheKey, computedValue);
-      }
-      return computedValue;
-    }
-    function assemble(fn, context, strategy, cache, serialize) {
-      return strategy.bind(context, fn, cache, serialize);
-    }
-    function strategyDefault(fn, options) {
-      var strategy = fn.length === 1 ? monadic : variadic;
-      return assemble(fn, this, strategy, options.cache.create(), options.serializer);
-    }
-    function serializerDefault() {
-      return JSON.stringify(arguments);
-    }
-    function ObjectWithoutPrototypeCache() {
-      this.cache = /* @__PURE__ */ Object.create(null);
-    }
-    ObjectWithoutPrototypeCache.prototype.has = function(key) {
-      return key in this.cache;
-    };
-    ObjectWithoutPrototypeCache.prototype.get = function(key) {
-      return this.cache[key];
-    };
-    ObjectWithoutPrototypeCache.prototype.set = function(key, value) {
-      this.cache[key] = value;
-    };
-    var cacheDefault = {
-      create: function create() {
-        return new ObjectWithoutPrototypeCache();
-      }
-    };
-    var memoize_default = memoize;
-
-    // src/index.ts
-    var DEFAULT_CLASS = {
-      MAIN: "svelte-draggable",
-      DRAGGING: "svelte-draggable-dragging",
-      DRAGGED: "svelte-draggable-dragged"
-    };
-    var draggable = (node, options = {}) => {
-      var _a, _b;
-      let {
-        bounds,
-        axis = "both",
-        gpuAcceleration = true,
-        applyUserSelectHack = true,
-        disabled = false,
-        ignoreMultitouch = false,
-        grid,
-        position,
-        cancel,
-        handle,
-        defaultClass = DEFAULT_CLASS.MAIN,
-        defaultClassDragging = DEFAULT_CLASS.DRAGGING,
-        defaultClassDragged = DEFAULT_CLASS.DRAGGED,
-        defaultPosition = { x: 0, y: 0 },
-        onDragStart,
-        onDrag,
-        onDragEnd
-      } = options;
-      const tick = new Promise(requestAnimationFrame);
-      let active = false;
-      let [translateX, translateY] = [0, 0];
-      let [initialX, initialY] = [0, 0];
-      let [clientToNodeOffsetX, clientToNodeOffsetY] = [0, 0];
-      let { x: xOffset, y: yOffset } = { x: (_a = position == null ? void 0 : position.x) != null ? _a : 0, y: (_b = position == null ? void 0 : position.y) != null ? _b : 0 };
-      setTranslate(xOffset, yOffset, node, gpuAcceleration);
-      let canMoveInX;
-      let canMoveInY;
-      let bodyOriginalUserSelectVal = "";
-      let computedBounds;
-      let nodeRect;
-      let dragEl;
-      let cancelEl;
-      let isControlled = !!position;
-      const getEventData = () => ({
-        offsetX: translateX,
-        offsetY: translateY,
-        domRect: node.getBoundingClientRect()
-      });
-      function fireSvelteDragStartEvent(node2) {
-        const data = getEventData();
-        node2.dispatchEvent(new CustomEvent("svelte-drag:start", { detail: data }));
-        onDragStart == null ? void 0 : onDragStart(data);
-      }
-      function fireSvelteDragStopEvent(node2) {
-        const data = getEventData();
-        node2.dispatchEvent(new CustomEvent("svelte-drag:end", { detail: data }));
-        onDragEnd == null ? void 0 : onDragEnd(data);
-      }
-      function fireSvelteDragEvent(node2, translateX2, translateY2) {
-        const data = getEventData();
-        node2.dispatchEvent(new CustomEvent("svelte-drag", { detail: data }));
-        onDrag == null ? void 0 : onDrag(data);
-      }
-      const listen = addEventListener;
-      listen("touchstart", dragStart, false);
-      listen("touchend", dragEnd, false);
-      listen("touchmove", drag, false);
-      listen("mousedown", dragStart, false);
-      listen("mouseup", dragEnd, false);
-      listen("mousemove", drag, false);
-      node.style.touchAction = "none";
-      const calculateInverseScale = () => {
-        let inverseScale = node.offsetWidth / nodeRect.width;
-        if (isNaN(inverseScale))
-          inverseScale = 1;
-        return inverseScale;
-      };
-      function dragStart(e) {
-        if (disabled)
-          return;
-        if (ignoreMultitouch && e.type === "touchstart" && e.touches.length > 1)
-          return;
-        node.classList.add(defaultClass);
-        dragEl = getDragEl(handle, node);
-        cancelEl = getCancelElement(cancel, node);
-        canMoveInX = ["both", "x"].includes(axis);
-        canMoveInY = ["both", "y"].includes(axis);
-        if (typeof bounds !== "undefined") {
-          computedBounds = computeBoundRect(bounds, node);
-        }
-        nodeRect = node.getBoundingClientRect();
-        if (isString(handle) && isString(cancel) && handle === cancel)
-          throw new Error("`handle` selector can't be same as `cancel` selector");
-        if (cancelEl == null ? void 0 : cancelEl.contains(dragEl))
-          throw new Error("Element being dragged can't be a child of the element on which `cancel` is applied");
-        if (dragEl.contains(e.target) && !(cancelEl == null ? void 0 : cancelEl.contains(e.target)))
-          active = true;
-        if (!active)
-          return;
-        if (applyUserSelectHack) {
-          bodyOriginalUserSelectVal = document.body.style.userSelect;
-          document.body.style.userSelect = "none";
-        }
-        fireSvelteDragStartEvent(node);
-        const { clientX, clientY } = isTouchEvent(e) ? e.touches[0] : e;
-        const inverseScale = calculateInverseScale();
-        if (canMoveInX)
-          initialX = clientX - xOffset / inverseScale;
-        if (canMoveInY)
-          initialY = clientY - yOffset / inverseScale;
-        if (computedBounds) {
-          clientToNodeOffsetX = clientX - nodeRect.left;
-          clientToNodeOffsetY = clientY - nodeRect.top;
-        }
-      }
-      function dragEnd() {
-        if (!active)
-          return;
-        node.classList.remove(defaultClassDragging);
-        node.classList.add(defaultClassDragged);
-        if (applyUserSelectHack)
-          document.body.style.userSelect = bodyOriginalUserSelectVal;
-        fireSvelteDragStopEvent(node);
-        if (canMoveInX)
-          initialX = translateX;
-        if (canMoveInX)
-          initialY = translateY;
-        active = false;
-      }
-      function drag(e) {
-        if (!active)
-          return;
-        node.classList.add(defaultClassDragging);
-        e.preventDefault();
-        nodeRect = node.getBoundingClientRect();
-        const { clientX, clientY } = isTouchEvent(e) ? e.touches[0] : e;
-        let [finalX, finalY] = [clientX, clientY];
-        const inverseScale = calculateInverseScale();
-        if (computedBounds) {
-          const virtualClientBounds = {
-            left: computedBounds.left + clientToNodeOffsetX,
-            top: computedBounds.top + clientToNodeOffsetY,
-            right: computedBounds.right + clientToNodeOffsetX - nodeRect.width,
-            bottom: computedBounds.bottom + clientToNodeOffsetY - nodeRect.height
-          };
-          finalX = clamp(finalX, virtualClientBounds.left, virtualClientBounds.right);
-          finalY = clamp(finalY, virtualClientBounds.top, virtualClientBounds.bottom);
-        }
-        if (Array.isArray(grid)) {
-          let [xSnap, ySnap] = grid;
-          if (isNaN(+xSnap) || xSnap < 0)
-            throw new Error("1st argument of `grid` must be a valid positive number");
-          if (isNaN(+ySnap) || ySnap < 0)
-            throw new Error("2nd argument of `grid` must be a valid positive number");
-          let [deltaX, deltaY] = [finalX - initialX, finalY - initialY];
-          [deltaX, deltaY] = snapToGrid([Math.floor(xSnap / inverseScale), Math.floor(ySnap / inverseScale)], deltaX, deltaY);
-          [finalX, finalY] = [initialX + deltaX, initialY + deltaY];
-        }
-        if (canMoveInX)
-          translateX = (finalX - initialX) * inverseScale;
-        if (canMoveInY)
-          translateY = (finalY - initialY) * inverseScale;
-        [xOffset, yOffset] = [translateX, translateY];
-        fireSvelteDragEvent(node);
-        tick.then(() => setTranslate(translateX, translateY, node, gpuAcceleration));
-      }
-      return {
-        destroy: () => {
-          const unlisten = removeEventListener;
-          unlisten("touchstart", dragStart, false);
-          unlisten("touchend", dragEnd, false);
-          unlisten("touchmove", drag, false);
-          unlisten("mousedown", dragStart, false);
-          unlisten("mouseup", dragEnd, false);
-          unlisten("mousemove", drag, false);
-        },
-        update: (options2) => {
-          var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k;
-          axis = options2.axis || "both";
-          disabled = (_a2 = options2.disabled) != null ? _a2 : false;
-          ignoreMultitouch = (_b2 = options2.ignoreMultitouch) != null ? _b2 : false;
-          handle = options2.handle;
-          bounds = options2.bounds;
-          cancel = options2.cancel;
-          applyUserSelectHack = (_c = options2.applyUserSelectHack) != null ? _c : true;
-          grid = options2.grid;
-          gpuAcceleration = (_d = options2.gpuAcceleration) != null ? _d : true;
-          const dragged = node.classList.contains(defaultClassDragged);
-          node.classList.remove(defaultClass, defaultClassDragged);
-          defaultClass = (_e = options2.defaultClass) != null ? _e : DEFAULT_CLASS.MAIN;
-          defaultClassDragging = (_f = options2.defaultClassDragging) != null ? _f : DEFAULT_CLASS.DRAGGING;
-          defaultClassDragged = (_g = options2.defaultClassDragged) != null ? _g : DEFAULT_CLASS.DRAGGED;
-          node.classList.add(defaultClass);
-          if (dragged)
-            node.classList.add(defaultClassDragged);
-          if (isControlled) {
-            xOffset = translateX = (_i = (_h = options2.position) == null ? void 0 : _h.x) != null ? _i : translateX;
-            yOffset = translateY = (_k = (_j = options2.position) == null ? void 0 : _j.y) != null ? _k : translateY;
-            tick.then(() => setTranslate(translateX, translateY, node, gpuAcceleration));
-          }
-        }
-      };
-    };
-    function isTouchEvent(event) {
-      return Boolean(event.touches && event.touches.length);
-    }
-    function clamp(val, min, max) {
-      return Math.min(Math.max(val, min), max);
-    }
-    function isString(val) {
-      return typeof val === "string";
-    }
-    var snapToGrid = memoize_default(([xSnap, ySnap], pendingX, pendingY) => {
-      const x = Math.round(pendingX / xSnap) * xSnap;
-      const y = Math.round(pendingY / ySnap) * ySnap;
-      return [x, y];
-    });
-    function getDragEl(handle, node) {
-      if (!handle)
-        return node;
-      const handleEl = node.querySelector(handle);
-      if (handleEl === null)
-        throw new Error("Selector passed for `handle` option should be child of the element on which the action is applied");
-      return handleEl;
-    }
-    function getCancelElement(cancel, node) {
-      if (!cancel)
-        return;
-      const cancelEl = node.querySelector(cancel);
-      if (cancelEl === null)
-        throw new Error("Selector passed for `cancel` option should be child of the element on which the action is applied");
-      return cancelEl;
-    }
-    function computeBoundRect(bounds, rootNode) {
-      if (typeof bounds === "object") {
-        const [windowWidth, windowHeight] = [window.innerWidth, window.innerHeight];
-        const { top = 0, left = 0, right = 0, bottom = 0 } = bounds;
-        const computedRight = windowWidth - right;
-        const computedBottom = windowHeight - bottom;
-        return { top, right: computedRight, bottom: computedBottom, left };
-      }
-      if (bounds === "parent") {
-        const boundRect = rootNode.parentNode.getBoundingClientRect();
-        return boundRect;
-      }
-      const node = document.querySelector(bounds);
-      if (node === null)
-        throw new Error("The selector provided for bound doesn't exists in the document.");
-      const computedBounds = node.getBoundingClientRect();
-      return computedBounds;
-    }
-    function setTranslate(xPos, yPos, el, gpuAcceleration) {
-      el.style.transform = gpuAcceleration ? `translate3d(${+xPos}px, ${+yPos}px, 0)` : `translate(${+xPos}px, ${+yPos}px)`;
-    }
+    function e(e,t,n,o){var r,i=null==(r=o)||"number"==typeof r||"boolean"==typeof r?o:n(o),a=t.get(i);return void 0===a&&(a=e.call(this,o),t.set(i,a)),a}function t(e,t,n){var o=Array.prototype.slice.call(arguments,3),r=n(o),i=t.get(r);return void 0===i&&(i=e.apply(this,o),t.set(r,i)),i}function n(n,o){return function(e,t,n,o,r){return n.bind(t,e,o,r)}(n,this,1===n.length?e:t,o.cache.create(),o.serializer)}const o=JSON.stringify;function r(){this.cache=Object.create(null);}r.prototype.has=function(e){return e in this.cache},r.prototype.get=function(e){return this.cache[e]},r.prototype.set=function(e,t){this.cache[e]=t;};var i={create:function(){return new r}};const a=(e,t={})=>{let{bounds:n,axis:o="both",gpuAcceleration:r=!0,applyUserSelectHack:i=!0,disabled:a=!1,ignoreMultitouch:d=!1,grid:h,position:f,cancel:g,handle:y,defaultClass:b="neodrag",defaultClassDragging:w="neodrag-dragging",defaultClassDragged:v="neodrag-dragged",defaultPosition:E={x:0,y:0},onDragStart:A,onDrag:x,onDragEnd:C}=t;const M=new Promise(requestAnimationFrame);let S,H,L=!1,D=0,N=0,R=0,T=0,B=0,q=0,{x:$,y:z}=f?{x:f?.x??0,y:f?.y??0}:E;m($,z,e,r);let X,Y,j,k,O="",P=!!f;const U=document.body.style,W=e.classList,F=(t,n)=>{const o={offsetX:D,offsetY:N,domRect:e.getBoundingClientRect()};e.dispatchEvent(new CustomEvent(t,{detail:o})),n?.(o);};const J=addEventListener;J("touchstart",I,!1),J("touchend",K,!1),J("touchmove",Q,!1),J("mousedown",I,!1),J("mouseup",K,!1),J("mousemove",Q,!1),e.style.touchAction="none";const G=()=>{let t=e.offsetWidth/Y.width;return isNaN(t)&&(t=1),t};function I(t){if(a)return;if(d&&"touchstart"===t.type&&t.touches.length>1)return;if(W.add(b),j=function(e,t){if(!e)return t;if(e instanceof HTMLElement||Array.isArray(e))return e;const n=t.querySelectorAll(e);if(null===n)throw new Error("Selector passed for `handle` option should be child of the element on which the action is applied");return Array.from(n.values())}(y,e),k=function(e,t){if(!e)return;if(e instanceof HTMLElement||Array.isArray(e))return e;const n=t.querySelectorAll(e);if(null===n)throw new Error("Selector passed for `cancel` option should be child of the element on which the action is applied");return Array.from(n.values())}(g,e),S=/(both|x)/.test(o),H=/(both|y)/.test(o),void 0!==n&&(X=function(e,t){if(e instanceof HTMLElement)return e.getBoundingClientRect();if("object"==typeof e){const{top:t=0,left:n=0,right:o=0,bottom:r=0}=e;return {top:t,right:window.innerWidth-o,bottom:window.innerHeight-r,left:n}}if("parent"===e)return t.parentNode.getBoundingClientRect();const n=document.querySelector(e);if(null===n)throw new Error("The selector provided for bound doesn't exists in the document.");return n.getBoundingClientRect()}(n,e)),Y=e.getBoundingClientRect(),l(y)&&l(g)&&y===g)throw new Error("`handle` selector can't be same as `cancel` selector");if(p(k,j))throw new Error("Element being dragged can't be a child of the element on which `cancel` is applied");if((j instanceof HTMLElement?j.contains(t.target):j.some((e=>e.contains(t.target))))&&!p(k,t.target)&&(L=!0),!L)return;i&&(O=U.userSelect,U.userSelect="none"),F("neodrag:start",A);const{clientX:r,clientY:c}=s(t)?t.touches[0]:t,u=G();S&&(R=r-$/u),H&&(T=c-z/u),X&&(B=r-Y.left,q=c-Y.top);}function K(){L&&(W.remove(w),W.add(v),i&&(U.userSelect=O),F("neodrag:end",C),S&&(R=D),S&&(T=N),L=!1);}function Q(t){if(!L)return;W.add(w),t.preventDefault(),Y=e.getBoundingClientRect();const{clientX:n,clientY:o}=s(t)?t.touches[0]:t;let i=n,a=o;const l=G();if(X){const e={left:X.left+B,top:X.top+q,right:X.right+B-Y.width,bottom:X.bottom+q-Y.height};i=c(i,e.left,e.right),a=c(a,e.top,e.bottom);}if(Array.isArray(h)){let[e,t]=h;if(isNaN(+e)||e<0)throw new Error("1st argument of `grid` must be a valid positive number");if(isNaN(+t)||t<0)throw new Error("2nd argument of `grid` must be a valid positive number");let n=i-R,o=a-T;[n,o]=u([Math.floor(e/l),Math.floor(t/l)],n,o),i=R+n,a=T+o;}S&&(D=(i-R)*l),H&&(N=(a-T)*l),$=D,z=N,F("neodrag",x),M.then((()=>m(D,N,e,r)));}return {destroy:()=>{const e=removeEventListener;e("touchstart",I,!1),e("touchend",K,!1),e("touchmove",Q,!1),e("mousedown",I,!1),e("mouseup",K,!1),e("mousemove",Q,!1);},update:t=>{o=t.axis||"both",a=t.disabled??!1,d=t.ignoreMultitouch??!1,y=t.handle,n=t.bounds,g=t.cancel,i=t.applyUserSelectHack??!0,h=t.grid,r=t.gpuAcceleration??!0;const s=W.contains(v);W.remove(b,v),b=t.defaultClass??"neodrag",w=t.defaultClassDragging??"neodrag-dragging",v=t.defaultClassDragged??"neodrag-dragged",W.add(b),s&&W.add(v),P&&($=D=t.position?.x??D,z=N=t.position?.y??N,M.then((()=>m(D,N,e,r))));}}},s=e=>!!e.touches?.length,c=(e,t,n)=>Math.min(Math.max(e,t),n),l=e=>"string"==typeof e,u=(d=([e,t],n,o)=>{const r=(e,t)=>Math.round(e/t)*t;return [r(n,e),r(o,t)]},f=h?.cache??i,g=h?.serializer??o,(h?.strategy??n)(d,{cache:f,serializer:g}));var d,h,f,g;function p(e,t){const n=t instanceof HTMLElement?[t]:t;return e instanceof HTMLElement?n.some((t=>e.contains(t))):!!Array.isArray(e)&&e.some((e=>n.some((t=>e.contains(t)))))}function m(e,t,n,o){n.style.transform=o?`translate3d(${+e}px, ${+t}px, 0)`:`translate(${+e}px, ${+t}px)`;}
 
     /* src\lib\assets\Logo.svelte generated by Svelte v3.50.1 */
 
@@ -1108,14 +795,75 @@ this.Web3WalletMenu.svelte = (function () {
     }
 
     const get_default_slot_changes = dirty => ({
-    	openNav: dirty & /*navOpen*/ 1,
-    	hideNav: dirty & /*navOpen*/ 1
+    	saveInputURL: dirty & /*saveInputURL*/ 8,
+    	inputUrl: dirty & /*inputUrl*/ 1
     });
 
     const get_default_slot_context = ctx => ({
-    	openNav: /*func*/ ctx[5],
-    	hideNav: /*func_1*/ ctx[6]
+    	openNav: /*openNav*/ ctx[7],
+    	hideNav: /*hideNav*/ ctx[6],
+    	saveInputURL: /*saveInputURL*/ ctx[3],
+    	inputUrl: /*inputUrl*/ ctx[0]
     });
+
+    // (68:0) {#if ready}
+    function create_if_block$3(ctx) {
+    	let div;
+    	let current;
+    	const default_slot_template = /*#slots*/ ctx[9].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[8], get_default_slot_context);
+
+    	return {
+    		c() {
+    			div = element("div");
+    			if (default_slot) default_slot.c();
+    			attr(div, "class", "sidenav svelte-epqmvq");
+    			toggle_class(div, "open", /*navOpen*/ ctx[2]);
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty & /*$$scope, saveInputURL, inputUrl*/ 265)) {
+    					update_slot_base(
+    						default_slot,
+    						default_slot_template,
+    						ctx,
+    						/*$$scope*/ ctx[8],
+    						!current
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[8])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[8], dirty, get_default_slot_changes),
+    						get_default_slot_context
+    					);
+    				}
+    			}
+
+    			if (!current || dirty & /*navOpen*/ 4) {
+    				toggle_class(div, "open", /*navOpen*/ ctx[2]);
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div);
+    			if (default_slot) default_slot.d(detaching);
+    		}
+    	};
+    }
 
     function create_fragment$3(ctx) {
     	let div4;
@@ -1125,13 +873,12 @@ this.Web3WalletMenu.svelte = (function () {
     	let t3;
     	let div5;
     	let t4;
-    	let div6;
+    	let if_block_anchor;
     	let current;
     	let mounted;
     	let dispose;
     	logo = new Logo({});
-    	const default_slot_template = /*#slots*/ ctx[4].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[3], get_default_slot_context);
+    	let if_block = /*ready*/ ctx[1] && create_if_block$3(ctx);
 
     	return {
     		c() {
@@ -1147,15 +894,13 @@ this.Web3WalletMenu.svelte = (function () {
     			t3 = space();
     			div5 = element("div");
     			t4 = space();
-    			div6 = element("div");
-    			if (default_slot) default_slot.c();
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
     			attr(div3, "class", "menu-icon svelte-epqmvq");
     			attr(div4, "class", "container svelte-epqmvq");
-    			toggle_class(div4, "change", /*navOpen*/ ctx[0]);
+    			toggle_class(div4, "change", /*navOpen*/ ctx[2]);
     			attr(div5, "class", "svelte-epqmvq");
-    			toggle_class(div5, "mask", /*navOpen*/ ctx[0]);
-    			attr(div6, "class", "sidenav svelte-epqmvq");
-    			toggle_class(div6, "open", /*navOpen*/ ctx[0]);
+    			toggle_class(div5, "mask", /*navOpen*/ ctx[2]);
     		},
     		m(target, anchor) {
     			insert(target, div4, anchor);
@@ -1165,61 +910,61 @@ this.Web3WalletMenu.svelte = (function () {
     			insert(target, t3, anchor);
     			insert(target, div5, anchor);
     			insert(target, t4, anchor);
-    			insert(target, div6, anchor);
-
-    			if (default_slot) {
-    				default_slot.m(div6, null);
-    			}
-
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen(div4, "click", /*handleNav*/ ctx[1]),
-    					action_destroyer(draggable.call(null, div4)),
-    					listen(div5, "click", /*onClickOutside*/ ctx[2])
+    					listen(div4, "click", /*handleNav*/ ctx[4]),
+    					action_destroyer(a.call(null, div4)),
+    					listen(div5, "click", /*onClickOutside*/ ctx[5])
     				];
 
     				mounted = true;
     			}
     		},
     		p(ctx, [dirty]) {
-    			if (!current || dirty & /*navOpen*/ 1) {
-    				toggle_class(div4, "change", /*navOpen*/ ctx[0]);
+    			if (!current || dirty & /*navOpen*/ 4) {
+    				toggle_class(div4, "change", /*navOpen*/ ctx[2]);
     			}
 
-    			if (!current || dirty & /*navOpen*/ 1) {
-    				toggle_class(div5, "mask", /*navOpen*/ ctx[0]);
+    			if (!current || dirty & /*navOpen*/ 4) {
+    				toggle_class(div5, "mask", /*navOpen*/ ctx[2]);
     			}
 
-    			if (default_slot) {
-    				if (default_slot.p && (!current || dirty & /*$$scope, navOpen*/ 9)) {
-    					update_slot_base(
-    						default_slot,
-    						default_slot_template,
-    						ctx,
-    						/*$$scope*/ ctx[3],
-    						!current
-    						? get_all_dirty_from_scope(/*$$scope*/ ctx[3])
-    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[3], dirty, get_default_slot_changes),
-    						get_default_slot_context
-    					);
+    			if (/*ready*/ ctx[1]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+
+    					if (dirty & /*ready*/ 2) {
+    						transition_in(if_block, 1);
+    					}
+    				} else {
+    					if_block = create_if_block$3(ctx);
+    					if_block.c();
+    					transition_in(if_block, 1);
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
-    			}
+    			} else if (if_block) {
+    				group_outros();
 
-    			if (!current || dirty & /*navOpen*/ 1) {
-    				toggle_class(div6, "open", /*navOpen*/ ctx[0]);
+    				transition_out(if_block, 1, 1, () => {
+    					if_block = null;
+    				});
+
+    				check_outros();
     			}
     		},
     		i(local) {
     			if (current) return;
     			transition_in(logo.$$.fragment, local);
-    			transition_in(default_slot, local);
+    			transition_in(if_block);
     			current = true;
     		},
     		o(local) {
     			transition_out(logo.$$.fragment, local);
-    			transition_out(default_slot, local);
+    			transition_out(if_block);
     			current = false;
     		},
     		d(detaching) {
@@ -1228,40 +973,94 @@ this.Web3WalletMenu.svelte = (function () {
     			if (detaching) detach(t3);
     			if (detaching) detach(div5);
     			if (detaching) detach(t4);
-    			if (detaching) detach(div6);
-    			if (default_slot) default_slot.d(detaching);
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
     			mounted = false;
     			run_all(dispose);
     		}
     	};
     }
 
+    const INPUT_URL = 'INPUT_URL';
+
     function instance$3($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	let navOpen = false;
+    	let { inputUrl } = $$props;
+    	let ready;
+    	let navOpen;
+    	let saveInputURL;
+
+    	// cache user's preferred wallet URL to their browser
+    	onMount(async () => {
+    		// check if indexeddb is available in this context
+    		if (typeof window.indexedDB === 'undefined') {
+    			console.log('IndexedDB not available');
+    			return;
+    		}
+
+    		const { ImmortalDB } = await Promise.resolve().then(function () { return index; });
+
+    		$$invalidate(3, saveInputURL = async e => {
+    			const src = e.detail;
+
+    			try {
+    				await ImmortalDB.set(INPUT_URL, src);
+    			} catch(error) {
+    				console.warn('Did not save', src, error);
+    			}
+    		});
+
+    		// check for URL
+    		try {
+    			const storedValue = await ImmortalDB.get(INPUT_URL, null);
+
+    			if (storedValue && !inputUrl) {
+    				$$invalidate(0, inputUrl = storedValue);
+    			}
+    		} catch(error) {
+    			console.warn('Did not get', error);
+    		}
+
+    		$$invalidate(1, ready = true);
+    	});
 
     	function handleNav() {
-    		$$invalidate(0, navOpen = !navOpen);
+    		$$invalidate(2, navOpen = !navOpen);
     	}
 
     	function onClickOutside(event) {
-    		$$invalidate(0, navOpen = false);
+    		$$invalidate(2, navOpen = false);
     	}
 
-    	const func = () => $$invalidate(0, navOpen = true);
-    	const func_1 = () => $$invalidate(0, navOpen = false);
+    	function hideNav() {
+    		$$invalidate(2, navOpen = false);
+    	}
+
+    	const openNav = () => $$invalidate(2, navOpen = true);
 
     	$$self.$$set = $$props => {
-    		if ('$$scope' in $$props) $$invalidate(3, $$scope = $$props.$$scope);
+    		if ('inputUrl' in $$props) $$invalidate(0, inputUrl = $$props.inputUrl);
+    		if ('$$scope' in $$props) $$invalidate(8, $$scope = $$props.$$scope);
     	};
 
-    	return [navOpen, handleNav, onClickOutside, $$scope, slots, func, func_1];
+    	return [
+    		inputUrl,
+    		ready,
+    		navOpen,
+    		saveInputURL,
+    		handleNav,
+    		onClickOutside,
+    		hideNav,
+    		openNav,
+    		$$scope,
+    		slots
+    	];
     }
 
     class MenuWrapper extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {}, add_css$2);
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { inputUrl: 0 }, add_css$2);
     	}
     }
 
@@ -2164,24 +1963,24 @@ this.Web3WalletMenu.svelte = (function () {
     const { window: window_1 } = globals;
 
     function add_css(target) {
-    	append_styles(target, "svelte-1jxvnse", "div.svelte-1jxvnse{--spacing:1em}.connector-container.svelte-1jxvnse{padding:1.618em}div.svelte-1jxvnse{--background:#161616}.top.svelte-1jxvnse{display:flex;justify-content:space-between;align-items:center}iframe.svelte-1jxvnse{border:none;width:100%;height:100%}.iframe.svelte-1jxvnse{display:flex;height:100%}.logo.svelte-1jxvnse{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url.svelte-1jxvnse{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-1jxvnse{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-1jxvnse{display:flex}.actions.svelte-1jxvnse:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-1jxvnse{opacity:0.9;color:#e0f7fa}.connected.svelte-1jxvnse{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-1jxvnse{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-1jxvnse{display:flex;flex-direction:column;width:100%}input.svelte-1jxvnse{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:15ch}");
+    	append_styles(target, "svelte-12a3ajw", "div.svelte-12a3ajw{--spacing:1em}.connector-container.svelte-12a3ajw{padding:1.618em}div.svelte-12a3ajw{--background:#161616}.top.svelte-12a3ajw{display:flex;justify-content:space-between;align-items:center}iframe.svelte-12a3ajw{border:none;width:100%;height:100%}.iframe.svelte-12a3ajw{display:flex;height:100%;min-height:500px}.logo.svelte-12a3ajw{flex:0 0 auto;position:relative;opacity:1;height:100%;display:flex;align-items:center;justify-content:center;padding:calc(var(--spacing) / 2)}.url.svelte-12a3ajw{padding:var(--spacing);padding-right:0;flex:1 1 0;min-width:0;outline:none;background-color:var(--background)}.green-line.svelte-12a3ajw{border-bottom:4px solid #0eff02;margin-left:var(--spacing);flex:1;position:relative;top:-8px}.actions.svelte-12a3ajw{display:flex}.actions.svelte-12a3ajw:last-child{padding-right:calc(var(--spacing) / 2)}.action.dim.svelte-12a3ajw{opacity:0.9;color:#e0f7fa}.connected.svelte-12a3ajw{color:greenyellow;text-shadow:1px 1px 3px black}.disconnected.svelte-12a3ajw{color:#e0f7fa;text-shadow:1px 1px 3px black}.url-input-container.svelte-12a3ajw{display:flex;flex-direction:column;width:100%}input.svelte-12a3ajw{flex:1 1 0;color:whitesmoke;background:none;border:none;margin:0;padding:0;font-size:0.95em;min-width:15ch}");
     }
 
-    // (132:3) {#if wallet?.address || inputUrl}
+    // (120:3) {#if wallet?.address || inputUrl}
     function create_if_block$1(ctx) {
     	let div;
     	let iconbutton;
     	let div_class_value;
     	let div_transition;
     	let current;
-    	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[12] } });
-    	iconbutton.$on("click", /*togglePopup*/ ctx[15]);
+    	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[11] } });
+    	iconbutton.$on("click", /*togglePopup*/ ctx[14]);
 
     	return {
     		c() {
     			div = element("div");
     			create_component(iconbutton.$$.fragment);
-    			attr(div, "class", div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1jxvnse"));
+    			attr(div, "class", div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-12a3ajw"));
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -2190,10 +1989,10 @@ this.Web3WalletMenu.svelte = (function () {
     		},
     		p(ctx, dirty) {
     			const iconbutton_changes = {};
-    			if (dirty & /*popupIcon*/ 4096) iconbutton_changes.icon = /*popupIcon*/ ctx[12];
+    			if (dirty & /*popupIcon*/ 2048) iconbutton_changes.icon = /*popupIcon*/ ctx[11];
     			iconbutton.$set(iconbutton_changes);
 
-    			if (!current || dirty & /*wallet*/ 1 && div_class_value !== (div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-1jxvnse"))) {
+    			if (!current || dirty & /*wallet*/ 1 && div_class_value !== (div_class_value = "" + (null_to_empty(!/*wallet*/ ctx[0]?.keepPopup ? 'action dim' : 'action') + " svelte-12a3ajw"))) {
     				attr(div, "class", div_class_value);
     			}
     		},
@@ -2222,11 +2021,11 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (148:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
+    // (136:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
     function create_default_slot$1(ctx) {
     	let span;
 
-    	let t_value = (/*data*/ ctx[10].loading || !/*src*/ ctx[6]
+    	let t_value = (/*data*/ ctx[9].loading || !/*src*/ ctx[7]
     	? 'Loading...'
     	: 'Load') + "";
 
@@ -2240,20 +2039,20 @@ this.Web3WalletMenu.svelte = (function () {
 
     			attr(span, "class", span_class_value = "" + (null_to_empty((/*wallet*/ ctx[0]?.address)
     			? ' connected '
-    			: ' disconnected ') + " svelte-1jxvnse"));
+    			: ' disconnected ') + " svelte-12a3ajw"));
     		},
     		m(target, anchor) {
     			insert(target, span, anchor);
     			append(span, t);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*data, src*/ 1088 && t_value !== (t_value = (/*data*/ ctx[10].loading || !/*src*/ ctx[6]
+    			if (dirty & /*data, src*/ 640 && t_value !== (t_value = (/*data*/ ctx[9].loading || !/*src*/ ctx[7]
     			? 'Loading...'
     			: 'Load') + "")) set_data(t, t_value);
 
     			if (dirty & /*wallet*/ 1 && span_class_value !== (span_class_value = "" + (null_to_empty((/*wallet*/ ctx[0]?.address)
     			? ' connected '
-    			: ' disconnected ') + " svelte-1jxvnse"))) {
+    			: ' disconnected ') + " svelte-12a3ajw"))) {
     				attr(span, "class", span_class_value);
     			}
     		},
@@ -2294,13 +2093,13 @@ this.Web3WalletMenu.svelte = (function () {
 
     	iconbutton = new WalletSelectorIcons({
     			props: {
-    				icon: /*connectionIcon*/ ctx[11],
+    				icon: /*connectionIcon*/ ctx[10],
     				$$slots: { default: [create_default_slot$1] },
     				$$scope: { ctx }
     			}
     		});
 
-    	iconbutton.$on("click", /*click_handler*/ ctx[23]);
+    	iconbutton.$on("click", /*click_handler*/ ctx[22]);
 
     	return {
     		c() {
@@ -2323,33 +2122,33 @@ this.Web3WalletMenu.svelte = (function () {
     			t4 = space();
     			div5 = element("div");
     			iframe_1 = element("iframe");
-    			attr(div0, "class", "actions logo svelte-1jxvnse");
+    			attr(div0, "class", "actions logo svelte-12a3ajw");
     			attr(a, "href", "https://PeerPiper.io");
     			attr(a, "target", "_blank");
     			attr(a, "rel", "noreferrer");
-    			attr(input, "class", "url svelte-1jxvnse");
+    			attr(input, "class", "url svelte-12a3ajw");
     			attr(input, "placeholder", placeholder);
-    			attr(span, "class", "green-line svelte-1jxvnse");
-    			attr(div1, "class", "url-input-container svelte-1jxvnse");
+    			attr(span, "class", "green-line svelte-12a3ajw");
+    			attr(div1, "class", "url-input-container svelte-12a3ajw");
 
-    			attr(div2, "class", div2_class_value = "" + (null_to_empty((/*data*/ ctx[10]?.loading)
+    			attr(div2, "class", div2_class_value = "" + (null_to_empty((/*data*/ ctx[9]?.loading)
     			? 'action dim'
     			: /*wallet*/ ctx[0]?.address
     				? ' connected '
-    				: ' disconnected ') + " svelte-1jxvnse"));
+    				: ' disconnected ') + " svelte-12a3ajw"));
 
-    			attr(div3, "class", "actions svelte-1jxvnse");
-    			attr(div4, "class", "top svelte-1jxvnse");
+    			attr(div3, "class", "actions svelte-12a3ajw");
+    			attr(div4, "class", "top svelte-12a3ajw");
     			set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
-    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[24].call(div4));
+    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[23].call(div4));
     			attr(iframe_1, "title", "Web Wallet");
-    			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[6])) attr(iframe_1, "src", iframe_1_src_value);
+    			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[7])) attr(iframe_1, "src", iframe_1_src_value);
     			attr(iframe_1, "allow", "clipboard-read 'self' 'src'; clipboard-write 'self' 'src';");
-    			attr(iframe_1, "class", "svelte-1jxvnse");
-    			attr(div5, "class", "iframe svelte-1jxvnse");
+    			attr(iframe_1, "class", "svelte-12a3ajw");
+    			attr(div5, "class", "iframe svelte-12a3ajw");
     			set_style(div5, "height", "calc(" + /*iframeParentHeight*/ ctx[4] + "px + 18px)");
-    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[26].call(div5));
-    			attr(div6, "class", "connector-container svelte-1jxvnse");
+    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[25].call(div5));
+    			attr(div6, "class", "connector-container svelte-12a3ajw");
     		},
     		m(target, anchor) {
     			insert(target, div6, anchor);
@@ -2369,31 +2168,26 @@ this.Web3WalletMenu.svelte = (function () {
     			append(div3, t3);
     			append(div3, div2);
     			mount_component(iconbutton, div2, null);
-    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[24].bind(div4));
+    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[23].bind(div4));
     			append(div6, t4);
     			append(div6, div5);
     			append(div5, iframe_1);
-    			/*iframe_1_binding*/ ctx[25](iframe_1);
-    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[26].bind(div5));
+    			/*iframe_1_binding*/ ctx[24](iframe_1);
+    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[25].bind(div5));
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen(window_1, "keydown", /*handleKeydown*/ ctx[16]),
-    					listen(input, "focus", /*focus_handler*/ ctx[20]),
-    					listen(input, "blur", /*blur_handler*/ ctx[21]),
-    					listen(input, "input", /*input_input_handler*/ ctx[22]),
-    					listen(input, "input", function () {
-    						if (is_function(/*saveInputURL*/ ctx[8])) /*saveInputURL*/ ctx[8].apply(this, arguments);
-    					})
+    					listen(window_1, "keydown", /*handleKeydown*/ ctx[15]),
+    					listen(input, "focus", /*focus_handler*/ ctx[19]),
+    					listen(input, "blur", /*blur_handler*/ ctx[20]),
+    					listen(input, "input", /*input_input_handler*/ ctx[21])
     				];
 
     				mounted = true;
     			}
     		},
-    		p(new_ctx, [dirty]) {
-    			ctx = new_ctx;
-
+    		p(ctx, [dirty]) {
     			if (dirty & /*inputUrl*/ 2 && input.value !== /*inputUrl*/ ctx[1]) {
     				set_input_value(input, /*inputUrl*/ ctx[1]);
     			}
@@ -2422,19 +2216,19 @@ this.Web3WalletMenu.svelte = (function () {
     			}
 
     			const iconbutton_changes = {};
-    			if (dirty & /*connectionIcon*/ 2048) iconbutton_changes.icon = /*connectionIcon*/ ctx[11];
+    			if (dirty & /*connectionIcon*/ 1024) iconbutton_changes.icon = /*connectionIcon*/ ctx[10];
 
-    			if (dirty & /*$$scope, wallet, data, src*/ 1073742913) {
+    			if (dirty & /*$$scope, wallet, data, src*/ 268436097) {
     				iconbutton_changes.$$scope = { dirty, ctx };
     			}
 
     			iconbutton.$set(iconbutton_changes);
 
-    			if (!current || dirty & /*data, wallet*/ 1025 && div2_class_value !== (div2_class_value = "" + (null_to_empty((/*data*/ ctx[10]?.loading)
+    			if (!current || dirty & /*data, wallet*/ 513 && div2_class_value !== (div2_class_value = "" + (null_to_empty((/*data*/ ctx[9]?.loading)
     			? 'action dim'
     			: /*wallet*/ ctx[0]?.address
     				? ' connected '
-    				: ' disconnected ') + " svelte-1jxvnse"))) {
+    				: ' disconnected ') + " svelte-12a3ajw"))) {
     				attr(div2, "class", div2_class_value);
     			}
 
@@ -2442,7 +2236,7 @@ this.Web3WalletMenu.svelte = (function () {
     				set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
     			}
 
-    			if (!current || dirty & /*src*/ 64 && !src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[6])) {
+    			if (!current || dirty & /*src*/ 128 && !src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[7])) {
     				attr(iframe_1, "src", iframe_1_src_value);
     			}
 
@@ -2469,7 +2263,7 @@ this.Web3WalletMenu.svelte = (function () {
     			if (if_block) if_block.d();
     			destroy_component(iconbutton);
     			div4_resize_listener();
-    			/*iframe_1_binding*/ ctx[25](null);
+    			/*iframe_1_binding*/ ctx[24](null);
     			div5_resize_listener();
     			mounted = false;
     			run_all(dispose);
@@ -2478,7 +2272,6 @@ this.Web3WalletMenu.svelte = (function () {
     }
 
     let placeholder = 'Enter Wallet Url';
-    const INPUT_URL = 'INPUT_URL';
 
     function instance$1($$self, $$props, $$invalidate) {
     	let popupIcon;
@@ -2496,7 +2289,6 @@ this.Web3WalletMenu.svelte = (function () {
     	let src;
     	let iframe;
     	let focused;
-    	let saveInputURL;
 
     	const data = {
     		loading: true, // load right away
@@ -2505,33 +2297,12 @@ this.Web3WalletMenu.svelte = (function () {
 
     	// cache user's preferred wallet URL to their browser
     	onMount(async () => {
-    		const { ImmortalDB } = await Promise.resolve().then(function () { return index; });
-
-    		$$invalidate(8, saveInputURL = async () => {
-    			try {
-    				await ImmortalDB.set(INPUT_URL, src);
-    			} catch(error) {
-    				console.warn('Did not save', src, error);
-    			}
-    		});
-
-    		// check for URL
-    		try {
-    			const storedValue = await ImmortalDB.get(INPUT_URL, null);
-
-    			if (storedValue) {
-    				$$invalidate(1, inputUrl = storedValue);
-    			}
-    		} catch(error) {
-    			console.warn('Did not get', error);
-    		}
-
     		connect();
     	});
 
     	async function handleIframeLoad() {
     		// console.log('Iframe loaded');
-    		$$invalidate(10, data.loading = false, data);
+    		$$invalidate(9, data.loading = false, data);
 
     		let pending;
 
@@ -2545,14 +2316,19 @@ this.Web3WalletMenu.svelte = (function () {
     				},
     				setIframeParentWidth(width) {
     					// console.log('Rx width', width);
-    					$$invalidate(17, iframeParentWidth = width);
+    					$$invalidate(16, iframeParentWidth = width);
     				},
     				show() {
     					show();
     				},
     				hide() {
+    					console.log('hiding', { hide });
     					hide();
     				},
+    				// walletReady gets called from wallet-sdk when
+    				// connectionsReady is called which is called when
+    				// loadedKeys is fired
+    				// which only happens when the keys are loaded
     				walletReady() {
     					$$invalidate(0, wallet = pending); // when using svelte bind:wallet
     					dispatch('walletReady', { wallet }); // when using vanilla JS
@@ -2560,6 +2336,16 @@ this.Web3WalletMenu.svelte = (function () {
     					// overwrite any other arweave wallets on the window object
     					// @ts-ignore
     					window.arweaveWallet = wallet.arweaveWalletAPI;
+
+    					if (wallet) {
+    						// hack: await 250 milliseconds
+    						setTimeout(
+    							() => {
+    								hide();
+    							},
+    							250
+    						);
+    					}
 
     					return true;
     				}
@@ -2572,9 +2358,10 @@ this.Web3WalletMenu.svelte = (function () {
 
     	const connect = () => {
     		if (src === inputUrl) return;
-    		$$invalidate(6, src = '');
-    		$$invalidate(6, src = inputUrl);
-    		$$invalidate(10, data.loading = true, data);
+    		$$invalidate(7, src = '');
+    		$$invalidate(7, src = inputUrl);
+    		$$invalidate(9, data.loading = true, data);
+    		dispatch('inputUrl', inputUrl); // when using vanilla JS
     	};
 
     	const disconnect = () => wallet.disconnect();
@@ -2584,8 +2371,8 @@ this.Web3WalletMenu.svelte = (function () {
     		if (event.key === 'Enter' && focused) connect();
     	}
 
-    	const focus_handler = () => $$invalidate(9, focused = true);
-    	const blur_handler = () => $$invalidate(9, focused = false);
+    	const focus_handler = () => $$invalidate(8, focused = true);
+    	const blur_handler = () => $$invalidate(8, focused = false);
 
     	function input_input_handler() {
     		inputUrl = this.value;
@@ -2606,7 +2393,7 @@ this.Web3WalletMenu.svelte = (function () {
     	function iframe_1_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			iframe = $$value;
-    			$$invalidate(7, iframe);
+    			$$invalidate(6, iframe);
     		});
     	}
 
@@ -2621,26 +2408,22 @@ this.Web3WalletMenu.svelte = (function () {
     		if ('topOffsetHeight' in $$props) $$invalidate(2, topOffsetHeight = $$props.topOffsetHeight);
     		if ('topOffsetWidth' in $$props) $$invalidate(3, topOffsetWidth = $$props.topOffsetWidth);
     		if ('iframeParentHeight' in $$props) $$invalidate(4, iframeParentHeight = $$props.iframeParentHeight);
-    		if ('iframeParentWidth' in $$props) $$invalidate(17, iframeParentWidth = $$props.iframeParentWidth);
-    		if ('show' in $$props) $$invalidate(18, show = $$props.show);
-    		if ('hide' in $$props) $$invalidate(19, hide = $$props.hide);
+    		if ('iframeParentWidth' in $$props) $$invalidate(16, iframeParentWidth = $$props.iframeParentWidth);
+    		if ('show' in $$props) $$invalidate(17, show = $$props.show);
+    		if ('hide' in $$props) $$invalidate(18, hide = $$props.hide);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*src, saveInputURL*/ 320) {
-    			src && saveInputURL && saveInputURL();
-    		}
-
-    		if ($$self.$$.dirty & /*iframe*/ 128) {
+    		if ($$self.$$.dirty & /*iframe*/ 64) {
     			iframe && iframe.addEventListener('load', handleIframeLoad);
     		}
 
     		if ($$self.$$.dirty & /*wallet*/ 1) {
-    			$$invalidate(12, popupIcon = (wallet?.keepPopup) ? 'close' : 'launch');
+    			$$invalidate(11, popupIcon = (wallet?.keepPopup) ? 'close' : 'launch');
     		}
 
     		if ($$self.$$.dirty & /*wallet*/ 1) {
-    			$$invalidate(11, connectionIcon = (wallet?.address) ? 'unplug' : 'plug');
+    			$$invalidate(10, connectionIcon = (wallet?.address) ? 'unplug' : 'plug');
     		}
 
     		if ($$self.$$.dirty & /*iframeOffsetWidth, wallet*/ 33) {
@@ -2655,9 +2438,8 @@ this.Web3WalletMenu.svelte = (function () {
     		topOffsetWidth,
     		iframeParentHeight,
     		iframeOffsetWidth,
-    		src,
     		iframe,
-    		saveInputURL,
+    		src,
     		focused,
     		data,
     		connectionIcon,
@@ -2695,9 +2477,9 @@ this.Web3WalletMenu.svelte = (function () {
     				topOffsetHeight: 2,
     				topOffsetWidth: 3,
     				iframeParentHeight: 4,
-    				iframeParentWidth: 17,
-    				show: 18,
-    				hide: 19
+    				iframeParentWidth: 16,
+    				show: 17,
+    				hide: 18
     			},
     			add_css
     		);
@@ -2712,11 +2494,17 @@ this.Web3WalletMenu.svelte = (function () {
 
     	menuwrapper = new MenuWrapper({
     			props: {
+    				inputUrl: /*inputUrl*/ ctx[1],
     				$$slots: {
     					default: [
     						create_default_slot,
-    						({ openNav, hideNav }) => ({ 5: openNav, 6: hideNav }),
-    						({ openNav, hideNav }) => (openNav ? 32 : 0) | (hideNav ? 64 : 0)
+    						({ openNav, hideNav, saveInputURL, inputUrl }) => ({
+    							5: openNav,
+    							6: hideNav,
+    							7: saveInputURL,
+    							1: inputUrl
+    						}),
+    						({ openNav, hideNav, saveInputURL, inputUrl }) => (openNav ? 32 : 0) | (hideNav ? 64 : 0) | (saveInputURL ? 128 : 0) | (inputUrl ? 2 : 0)
     					]
     				},
     				$$scope: { ctx }
@@ -2733,8 +2521,9 @@ this.Web3WalletMenu.svelte = (function () {
     		},
     		p(ctx, dirty) {
     			const menuwrapper_changes = {};
+    			if (dirty & /*inputUrl*/ 2) menuwrapper_changes.inputUrl = /*inputUrl*/ ctx[1];
 
-    			if (dirty & /*$$scope, inputUrl, openNav, hideNav, wallet*/ 227) {
+    			if (dirty & /*$$scope, openNav, hideNav, inputUrl, wallet, saveInputURL*/ 483) {
     				menuwrapper_changes.$$scope = { dirty, ctx };
     			}
 
@@ -2755,7 +2544,7 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (17:1) <MenuWrapper let:openNav let:hideNav>
+    // (17:1) <MenuWrapper let:openNav let:hideNav let:saveInputURL {inputUrl} let:inputUrl>
     function create_default_slot(ctx) {
     	let connectorinside;
     	let updating_wallet;
@@ -2766,9 +2555,9 @@ this.Web3WalletMenu.svelte = (function () {
     	}
 
     	let connectorinside_props = {
-    		inputUrl: /*inputUrl*/ ctx[1],
     		show: /*openNav*/ ctx[5],
-    		hide: /*hideNav*/ ctx[6]
+    		hide: /*hideNav*/ ctx[6],
+    		inputUrl: /*inputUrl*/ ctx[1]
     	};
 
     	if (/*wallet*/ ctx[0] !== void 0) {
@@ -2779,6 +2568,10 @@ this.Web3WalletMenu.svelte = (function () {
     	binding_callbacks.push(() => bind(connectorinside, 'wallet', connectorinside_wallet_binding));
     	connectorinside.$on("walletReady", /*walletReady_handler*/ ctx[4]);
 
+    	connectorinside.$on("inputUrl", function () {
+    		if (is_function(/*saveInputURL*/ ctx[7])) /*saveInputURL*/ ctx[7].apply(this, arguments);
+    	});
+
     	return {
     		c() {
     			create_component(connectorinside.$$.fragment);
@@ -2787,11 +2580,12 @@ this.Web3WalletMenu.svelte = (function () {
     			mount_component(connectorinside, target, anchor);
     			current = true;
     		},
-    		p(ctx, dirty) {
+    		p(new_ctx, dirty) {
+    			ctx = new_ctx;
     			const connectorinside_changes = {};
-    			if (dirty & /*inputUrl*/ 2) connectorinside_changes.inputUrl = /*inputUrl*/ ctx[1];
     			if (dirty & /*openNav*/ 32) connectorinside_changes.show = /*openNav*/ ctx[5];
     			if (dirty & /*hideNav*/ 64) connectorinside_changes.hide = /*hideNav*/ ctx[6];
+    			if (dirty & /*inputUrl*/ 2) connectorinside_changes.inputUrl = /*inputUrl*/ ctx[1];
 
     			if (!updating_wallet && dirty & /*wallet*/ 1) {
     				updating_wallet = true;
@@ -2872,7 +2666,7 @@ this.Web3WalletMenu.svelte = (function () {
     }
 
     function instance($$self, $$props, $$invalidate) {
-    	let { inputUrl } = $$props;
+    	let { inputUrl = null } = $$props;
     	let { wallet = null } = $$props;
     	let mounted;
 

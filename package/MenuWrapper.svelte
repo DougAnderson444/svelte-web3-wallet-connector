@@ -1,8 +1,45 @@
 <script>
-	import { draggable } from 'svelte-drag';
+	import { onMount } from 'svelte';
+	import { draggable } from '@neodrag/svelte';
 	import Logo from './assets/Logo.svelte'; // https://peerpiper.io
 
-	let navOpen = false;
+	export let inputUrl;
+
+	let ready;
+	let navOpen;
+	let saveInputURL;
+	const INPUT_URL = 'INPUT_URL';
+
+	// cache user's preferred wallet URL to their browser
+	onMount(async () => {
+		// check if indexeddb is available in this context
+		if (typeof window.indexedDB === 'undefined') {
+			console.log('IndexedDB not available');
+			return;
+		}
+
+		const { ImmortalDB } = await import('immortal-db');
+
+		saveInputURL = async (e) => {
+			const src = e.detail;
+			try {
+				await ImmortalDB.set(INPUT_URL, src);
+			} catch (error) {
+				console.warn('Did not save', src, error);
+			}
+		};
+
+		// check for URL
+		try {
+			const storedValue = await ImmortalDB.get(INPUT_URL, null);
+			if (storedValue && !inputUrl) {
+				inputUrl = storedValue;
+			}
+		} catch (error) {
+			console.warn('Did not get', error);
+		}
+		ready = true;
+	});
 
 	function handleNav() {
 		navOpen = !navOpen;
@@ -11,6 +48,10 @@
 	function onClickOutside(event) {
 		navOpen = false;
 	}
+	function hideNav() {
+		navOpen = false;
+	}
+	const openNav = () => (navOpen = true);
 </script>
 
 <!-- Use Menu Icon to open the sidenav -->
@@ -24,9 +65,11 @@
 </div>
 
 <div class:mask={navOpen} on:click={onClickOutside} />
-<div class="sidenav" class:open={navOpen}>
-	<slot openNav={() => (navOpen = true)} hideNav={() => (navOpen = false)} />
-</div>
+{#if ready}
+	<div class="sidenav" class:open={navOpen}>
+		<slot {openNav} {hideNav} {saveInputURL} {inputUrl} />
+	</div>
+{/if}
 
 <style>
 	.container {
