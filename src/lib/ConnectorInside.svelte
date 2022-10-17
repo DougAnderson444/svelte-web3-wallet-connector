@@ -28,39 +28,14 @@
 	let iframe;
 	let focused;
 
-	let saveInputURL;
-	let timer;
-	const INPUT_URL = 'INPUT_URL';
-
 	const data = {
 		loading: true // load right away
 	};
 
 	// cache user's preferred wallet URL to their browser
 	onMount(async () => {
-		const { ImmortalDB } = await import('immortal-db');
-
-		saveInputURL = async () => {
-			try {
-				await ImmortalDB.set(INPUT_URL, src);
-			} catch (error) {
-				console.warn('Did not save', src, error);
-			}
-		};
-
-		// check for URL
-		try {
-			const storedValue = await ImmortalDB.get(INPUT_URL, null);
-			if (storedValue) {
-				inputUrl = storedValue;
-			}
-		} catch (error) {
-			console.warn('Did not get', error);
-		}
 		connect();
 	});
-
-	$: src && saveInputURL && saveInputURL();
 
 	async function handleIframeLoad() {
 		// console.log('Iframe loaded');
@@ -84,14 +59,25 @@
 					show();
 				},
 				hide() {
+					console.log('hiding', { hide });
 					hide();
 				},
+				// walletReady gets called from wallet-sdk when
+				// connectionsReady is called which is called when
+				// loadedKeys is fired
+				// which only happens when the keys are loaded
 				walletReady() {
 					wallet = pending; // when using svelte bind:wallet
 					dispatch('walletReady', { wallet }); // when using vanilla JS
 					// overwrite any other arweave wallets on the window object
 					// @ts-ignore
 					window.arweaveWallet = wallet.arweaveWalletAPI;
+					if (wallet) {
+						// hack: await 250 milliseconds
+						setTimeout(() => {
+							hide();
+						}, 250);
+					}
 					return true;
 				}
 			}
@@ -106,6 +92,7 @@
 		src = '';
 		src = inputUrl;
 		data.loading = true;
+		dispatch('inputUrl', inputUrl); // when using vanilla JS
 	};
 
 	const disconnect = () => wallet.disconnect();
@@ -142,7 +129,6 @@
 				on:focus={() => (focused = true)}
 				on:blur={() => (focused = false)}
 				bind:value={inputUrl}
-				on:input={saveInputURL}
 			/>
 			<span class="green-line" />
 		</div>
@@ -213,6 +199,7 @@
 	.iframe {
 		display: flex;
 		height: 100%;
+		min-height: 500px;
 	}
 	.logo {
 		flex: 0 0 auto;
