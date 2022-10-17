@@ -6,8 +6,6 @@
 
 	import { dev } from '$app/env';
 
-	export let inputUrl;
-
 	let wallet;
 	let mounted;
 	let signature;
@@ -39,7 +37,6 @@
 	</div>
 	{#if mounted}
 		<Web3WalletMenu
-			{inputUrl}
 			on:walletReady={(e) => {
 				wallet = e.detail.wallet;
 			}}
