@@ -806,7 +806,7 @@ this.Web3WalletMenu.svelte = (function () {
     	inputUrl: /*inputUrl*/ ctx[0]
     });
 
-    // (68:0) {#if ready}
+    // (74:0) {#if ready}
     function create_if_block$3(ctx) {
     	let div;
     	let current;
@@ -916,8 +916,10 @@ this.Web3WalletMenu.svelte = (function () {
 
     			if (!mounted) {
     				dispose = [
+    					listen(div4, "keypress", /*handleNav*/ ctx[4]),
     					listen(div4, "click", /*handleNav*/ ctx[4]),
     					action_destroyer(a.call(null, div4)),
+    					listen(div5, "keypress", /*onClickOutside*/ ctx[5]),
     					listen(div5, "click", /*onClickOutside*/ ctx[5])
     				];
 
@@ -1603,7 +1605,7 @@ this.Web3WalletMenu.svelte = (function () {
     	append_styles(target, "svelte-boxns1", "button.svelte-boxns1{cursor:pointer;flex:0 0 auto;position:relative;opacity:0.8;height:100%;display:flex;align-items:center;justify-content:center}button.svelte-boxns1{color:inherit;background:none;border:none;margin:0;padding:0;font-size:1em;cursor:pointer}.img-container.svelte-boxns1{margin:calc(var(--spacing) / 2);width:1.6em;height:1.6em;position:relative}svg.svelte-boxns1{width:100%;height:100%;top:0;bottom:0;left:0;right:0;position:absolute}");
     }
 
-    // (9:2) {#if icon === 'close'}
+    // (12:2) {#if icon === 'close'}
     function create_if_block_3(ctx) {
     	let div;
     	let div_transition;
@@ -1640,7 +1642,7 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (23:2) {#if icon === 'launch'}
+    // (26:2) {#if icon === 'launch'}
     function create_if_block_2(ctx) {
     	let div;
     	let div_transition;
@@ -1677,7 +1679,7 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (36:2) {#if icon === 'plug'}
+    // (39:2) {#if icon === 'plug'}
     function create_if_block_1(ctx) {
     	let div;
     	let div_transition;
@@ -1714,7 +1716,7 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (49:2) {#if icon === 'unplug'}
+    // (52:2) {#if icon === 'unplug'}
     function create_if_block$2(ctx) {
     	let div;
     	let div_transition;
@@ -1803,7 +1805,11 @@ this.Web3WalletMenu.svelte = (function () {
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen(button, "click", /*click_handler*/ ctx[4]);
+    				dispose = [
+    					listen(button, "keypress", /*keypress_handler*/ ctx[4]),
+    					listen(button, "click", /*click_handler*/ ctx[5])
+    				];
+
     				mounted = true;
     			}
     		},
@@ -1932,7 +1938,7 @@ this.Web3WalletMenu.svelte = (function () {
     			if (if_block3) if_block3.d();
     			if (default_slot) default_slot.d(detaching);
     			mounted = false;
-    			dispose();
+    			run_all(dispose);
     		}
     	};
     }
@@ -1941,6 +1947,7 @@ this.Web3WalletMenu.svelte = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	let { icon } = $$props;
     	const dispatch = createEventDispatcher();
+    	const keypress_handler = () => dispatch('click', 'detail value');
     	const click_handler = () => dispatch('click', 'detail value');
 
     	$$self.$$set = $$props => {
@@ -1948,7 +1955,7 @@ this.Web3WalletMenu.svelte = (function () {
     		if ('$$scope' in $$props) $$invalidate(2, $$scope = $$props.$$scope);
     	};
 
-    	return [icon, dispatch, $$scope, slots, click_handler];
+    	return [icon, dispatch, $$scope, slots, keypress_handler, click_handler];
     }
 
     class WalletSelectorIcons extends SvelteComponent {
@@ -1974,6 +1981,7 @@ this.Web3WalletMenu.svelte = (function () {
     	let div_transition;
     	let current;
     	iconbutton = new WalletSelectorIcons({ props: { icon: /*popupIcon*/ ctx[11] } });
+    	iconbutton.$on("keypress", /*togglePopup*/ ctx[14]);
     	iconbutton.$on("click", /*togglePopup*/ ctx[14]);
 
     	return {
@@ -2021,7 +2029,7 @@ this.Web3WalletMenu.svelte = (function () {
     	};
     }
 
-    // (136:4) <IconButton       icon={connectionIcon}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
+    // (136:4) <IconButton       icon={connectionIcon}       on:keypress={() => {        wallet?.address ? disconnect() : connect();       }}       on:click={() => {        wallet?.address ? disconnect() : connect();       }}       >
     function create_default_slot$1(ctx) {
     	let span;
 
@@ -2099,7 +2107,8 @@ this.Web3WalletMenu.svelte = (function () {
     			}
     		});
 
-    	iconbutton.$on("click", /*click_handler*/ ctx[22]);
+    	iconbutton.$on("keypress", /*keypress_handler*/ ctx[22]);
+    	iconbutton.$on("click", /*click_handler*/ ctx[23]);
 
     	return {
     		c() {
@@ -2140,14 +2149,14 @@ this.Web3WalletMenu.svelte = (function () {
     			attr(div3, "class", "actions svelte-12a3ajw");
     			attr(div4, "class", "top svelte-12a3ajw");
     			set_style(div4, "--topOffsetHeight", /*topOffsetHeight*/ ctx[2]);
-    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[23].call(div4));
+    			add_render_callback(() => /*div4_elementresize_handler*/ ctx[24].call(div4));
     			attr(iframe_1, "title", "Web Wallet");
     			if (!src_url_equal(iframe_1.src, iframe_1_src_value = /*src*/ ctx[7])) attr(iframe_1, "src", iframe_1_src_value);
     			attr(iframe_1, "allow", "clipboard-read 'self' 'src'; clipboard-write 'self' 'src';");
     			attr(iframe_1, "class", "svelte-12a3ajw");
     			attr(div5, "class", "iframe svelte-12a3ajw");
     			set_style(div5, "height", "calc(" + /*iframeParentHeight*/ ctx[4] + "px + 18px)");
-    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[25].call(div5));
+    			add_render_callback(() => /*div5_elementresize_handler*/ ctx[26].call(div5));
     			attr(div6, "class", "connector-container svelte-12a3ajw");
     		},
     		m(target, anchor) {
@@ -2168,12 +2177,12 @@ this.Web3WalletMenu.svelte = (function () {
     			append(div3, t3);
     			append(div3, div2);
     			mount_component(iconbutton, div2, null);
-    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[23].bind(div4));
+    			div4_resize_listener = add_resize_listener(div4, /*div4_elementresize_handler*/ ctx[24].bind(div4));
     			append(div6, t4);
     			append(div6, div5);
     			append(div5, iframe_1);
-    			/*iframe_1_binding*/ ctx[24](iframe_1);
-    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[25].bind(div5));
+    			/*iframe_1_binding*/ ctx[25](iframe_1);
+    			div5_resize_listener = add_resize_listener(div5, /*div5_elementresize_handler*/ ctx[26].bind(div5));
     			current = true;
 
     			if (!mounted) {
@@ -2218,7 +2227,7 @@ this.Web3WalletMenu.svelte = (function () {
     			const iconbutton_changes = {};
     			if (dirty & /*connectionIcon*/ 1024) iconbutton_changes.icon = /*connectionIcon*/ ctx[10];
 
-    			if (dirty & /*$$scope, wallet, data, src*/ 268436097) {
+    			if (dirty & /*$$scope, wallet, data, src*/ 536871553) {
     				iconbutton_changes.$$scope = { dirty, ctx };
     			}
 
@@ -2263,7 +2272,7 @@ this.Web3WalletMenu.svelte = (function () {
     			if (if_block) if_block.d();
     			destroy_component(iconbutton);
     			div4_resize_listener();
-    			/*iframe_1_binding*/ ctx[24](null);
+    			/*iframe_1_binding*/ ctx[25](null);
     			div5_resize_listener();
     			mounted = false;
     			run_all(dispose);
@@ -2379,6 +2388,10 @@ this.Web3WalletMenu.svelte = (function () {
     		$$invalidate(1, inputUrl);
     	}
 
+    	const keypress_handler = () => {
+    		(wallet?.address) ? disconnect() : connect();
+    	};
+
     	const click_handler = () => {
     		(wallet?.address) ? disconnect() : connect();
     	};
@@ -2454,6 +2467,7 @@ this.Web3WalletMenu.svelte = (function () {
     		focus_handler,
     		blur_handler,
     		input_input_handler,
+    		keypress_handler,
     		click_handler,
     		div4_elementresize_handler,
     		iframe_1_binding,

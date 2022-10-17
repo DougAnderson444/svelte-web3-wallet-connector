@@ -448,7 +448,7 @@ const get_default_slot_context = ctx => ({
 	inputUrl: /*inputUrl*/ ctx[0]
 });
 
-// (68:0) {#if ready}
+// (74:0) {#if ready}
 function create_if_block(ctx) {
 	let div;
 	let current;
@@ -558,8 +558,10 @@ function create_fragment(ctx) {
 
 			if (!mounted) {
 				dispose = [
+					listen(div4, "keypress", /*handleNav*/ ctx[4]),
 					listen(div4, "click", /*handleNav*/ ctx[4]),
 					action_destroyer(a.call(null, div4)),
+					listen(div5, "keypress", /*onClickOutside*/ ctx[5]),
 					listen(div5, "click", /*onClickOutside*/ ctx[5])
 				];
 
