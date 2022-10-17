@@ -55,7 +55,13 @@
 </script>
 
 <!-- Use Menu Icon to open the sidenav -->
-<div class="container" class:change={navOpen} on:click={handleNav} use:draggable>
+<div
+	class="container"
+	class:change={navOpen}
+	on:keypress={handleNav}
+	on:click={handleNav}
+	use:draggable
+>
 	<Logo />
 	<div class="menu-icon">
 		<div class="bar1" />
@@ -64,7 +70,7 @@
 	</div>
 </div>
 
-<div class:mask={navOpen} on:click={onClickOutside} />
+<div class:mask={navOpen} on:keypress={onClickOutside} on:click={onClickOutside} />
 {#if ready}
 	<div class="sidenav" class:open={navOpen}>
 		<slot {openNav} {hideNav} {saveInputURL} {inputUrl} />

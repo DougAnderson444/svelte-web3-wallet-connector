@@ -138,7 +138,7 @@
 					transition:fade={{ delay: 100, duration: 100 }}
 					class={!wallet?.keepPopup ? 'action dim' : 'action'}
 				>
-					<IconButton icon={popupIcon} on:click={togglePopup} />
+					<IconButton icon={popupIcon} on:keypress={togglePopup} on:click={togglePopup} />
 				</div>
 			{/if}
 
@@ -151,6 +151,9 @@
 			>
 				<IconButton
 					icon={connectionIcon}
+					on:keypress={() => {
+						wallet?.address ? disconnect() : connect();
+					}}
 					on:click={() => {
 						wallet?.address ? disconnect() : connect();
 					}}

@@ -7,7 +7,10 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<button on:click={() => dispatch('click', 'detail value')}>
+<button
+	on:keypress={() => dispatch('click', 'detail value')}
+	on:click={() => dispatch('click', 'detail value')}
+>
 	<div class="img-container">
 		{#if icon === 'close'}
 			<div transition:fade={{ delay: 100, duration: 100 }}>
