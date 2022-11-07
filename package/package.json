@@ -1,6 +1,6 @@
 {
   "name": "@peerpiper/web3-wallet-connector",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "index.js",
   "module": "index.js",
   "devDependencies": {
@@ -10,6 +10,7 @@
     "@rollup/plugin-typescript": "^8.3.0",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
+    "dotenv": "^16.0.3",
     "globby": "^13.1.2",
     "prettier": "^2.4.1",
     "prettier-plugin-svelte": "^2.4.0",
@@ -27,9 +28,9 @@
   },
   "type": "module",
   "dependencies": {
+    "@neodrag/svelte": "^1.2.3",
     "immortal-db": "^1.1.0",
-    "penpal": "^6.2.1",
-    "@neodrag/svelte": "^1.2.3"
+    "penpal": "^6.2.1"
   },
   "repository": {
     "type": "git",
@@ -41,16 +42,13 @@
     "./app.css": "./app.css",
     "./assets/Logo.svelte": "./assets/Logo.svelte",
     "./assets/p.svelte": "./assets/p.svelte",
-    "./bundled/es/Connector.svelte": "./bundled/es/Connector.svelte.js",
     "./bundled/es/ConnectorInside.svelte": "./bundled/es/ConnectorInside.svelte.js",
     "./bundled/es/MenuWrapper.svelte": "./bundled/es/MenuWrapper.svelte.js",
     "./bundled/es/Web3WalletMenu.svelte": "./bundled/es/Web3WalletMenu.svelte.js",
     "./bundled/iife/bundle.css": "./bundled/iife/bundle.css",
-    "./bundled/iife/Connector.svelte": "./bundled/iife/Connector.svelte.js",
     "./bundled/iife/ConnectorInside.svelte": "./bundled/iife/ConnectorInside.svelte.js",
     "./bundled/iife/MenuWrapper.svelte": "./bundled/iife/MenuWrapper.svelte.js",
     "./bundled/iife/Web3WalletMenu.svelte": "./bundled/iife/Web3WalletMenu.svelte.js",
-    "./bundled/umd/Connector.svelte": "./bundled/umd/Connector.svelte.js",
     "./bundled/umd/ConnectorInside.svelte": "./bundled/umd/ConnectorInside.svelte.js",
     "./bundled/umd/MenuWrapper.svelte": "./bundled/umd/MenuWrapper.svelte.js",
     "./bundled/umd/Web3WalletMenu.svelte": "./bundled/umd/Web3WalletMenu.svelte.js",
