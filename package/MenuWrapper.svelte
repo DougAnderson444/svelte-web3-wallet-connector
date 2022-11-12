@@ -82,8 +82,8 @@
 		display: flex;
 		align-items: center;
 		position: absolute;
-		top: 15px;
-		right: 6px;
+		top: 6px;
+		right: 5px;
 		z-index: 100;
 		cursor: pointer;
 		/* 	background-color: black; */

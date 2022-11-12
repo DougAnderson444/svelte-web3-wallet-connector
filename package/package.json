@@ -1,6 +1,6 @@
 {
   "name": "@peerpiper/web3-wallet-connector",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "index.js",
   "module": "index.js",
   "devDependencies": {
@@ -44,13 +44,16 @@
     "./assets/p.svelte": "./assets/p.svelte",
     "./bundled/es/ConnectorInside.svelte": "./bundled/es/ConnectorInside.svelte.js",
     "./bundled/es/MenuWrapper.svelte": "./bundled/es/MenuWrapper.svelte.js",
+    "./bundled/es/WalletManager.svelte": "./bundled/es/WalletManager.svelte.js",
     "./bundled/es/Web3WalletMenu.svelte": "./bundled/es/Web3WalletMenu.svelte.js",
     "./bundled/iife/bundle.css": "./bundled/iife/bundle.css",
     "./bundled/iife/ConnectorInside.svelte": "./bundled/iife/ConnectorInside.svelte.js",
     "./bundled/iife/MenuWrapper.svelte": "./bundled/iife/MenuWrapper.svelte.js",
+    "./bundled/iife/WalletManager.svelte": "./bundled/iife/WalletManager.svelte.js",
     "./bundled/iife/Web3WalletMenu.svelte": "./bundled/iife/Web3WalletMenu.svelte.js",
     "./bundled/umd/ConnectorInside.svelte": "./bundled/umd/ConnectorInside.svelte.js",
     "./bundled/umd/MenuWrapper.svelte": "./bundled/umd/MenuWrapper.svelte.js",
+    "./bundled/umd/WalletManager.svelte": "./bundled/umd/WalletManager.svelte.js",
     "./bundled/umd/Web3WalletMenu.svelte": "./bundled/umd/Web3WalletMenu.svelte.js",
     "./clickOutside": "./clickOutside.js",
     "./close": "./close.js",
@@ -58,6 +61,7 @@
     "./ConnectorInside.svelte": "./ConnectorInside.svelte",
     ".": "./index.js",
     "./MenuWrapper.svelte": "./MenuWrapper.svelte",
+    "./WalletManager.svelte": "./WalletManager.svelte",
     "./Web3WalletMenu.svelte": "./Web3WalletMenu.svelte"
   },
   "svelte": "./index.js"
