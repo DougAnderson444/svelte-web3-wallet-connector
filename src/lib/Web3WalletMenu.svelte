@@ -13,15 +13,19 @@
 	});
 </script>
 
-{#if mounted}
-	<MenuWrapper let:openNav let:hideNav let:saveInputURL {inputUrl} let:url>
-		<ConnectorInside
-			bind:wallet
-			show={openNav}
-			hide={hideNav}
-			on:walletReady
-			inputUrl={url}
-			on:inputUrl={saveInputURL}
-		/>
-	</MenuWrapper>
-{/if}
+<section class="m-0">
+	{#if mounted}
+		<MenuWrapper let:openNav let:hideNav let:saveInputURL {inputUrl} let:url>
+			<ConnectorInside
+				bind:wallet
+				show={openNav}
+				hide={hideNav}
+				on:walletReady
+				inputUrl={url}
+				on:inputUrl={saveInputURL}
+			/>
+		</MenuWrapper>
+	{/if}
+</section>
+
+<style lang="postcss"></style>

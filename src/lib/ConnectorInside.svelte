@@ -170,7 +170,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	div {
 		--spacing: 1em;
 	}
