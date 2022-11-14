@@ -52,8 +52,8 @@ export default components.map(({ namespace, component }) => ({
 			browser: true,
 			dedupe: ['svelte']
 		}),
-		commonjs()
-		// terser()
+		commonjs(),
+		terser()
 	],
 	watch: {
 		clearScreen: false
