@@ -84,7 +84,7 @@
 		position: absolute;
 		top: 6px;
 		right: 5px;
-		z-index: 100;
+		z-index: 50;
 		cursor: pointer;
 		/* 	background-color: black; */
 		margin: 1.618em;
