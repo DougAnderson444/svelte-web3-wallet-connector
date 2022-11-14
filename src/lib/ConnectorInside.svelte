@@ -110,38 +110,29 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="connector-container">
+<div class="flex flex-col m-2 max-w-full h-screen">
 	<div
-		class="top"
+		class="flex flex-row space-between items-center"
 		bind:offsetHeight={topOffsetHeight}
 		bind:offsetWidth={topOffsetWidth}
 		style="--topOffsetHeight: {topOffsetHeight};"
 	>
-		<a href="https://PeerPiper.io" target="_blank" rel="noreferrer">
+		<a class="flex-0 hidden sm:flex" href="https://PeerPiper.io" target="_blank" rel="noreferrer">
 			<div class="actions logo">
 				<Logo />
 			</div></a
 		>
-		<div class="url-input-container">
+		<div class="flex-shrink flex flex-col w-full pl-2">
 			<input
-				class="url"
+				class="url pl-0 p-[1em] pr-0 text-white bg-none border-none m-0 text-sm sm:text-base outline-none"
 				{placeholder}
 				on:focus={() => (focused = true)}
 				on:blur={() => (focused = false)}
 				bind:value={inputUrl}
 			/>
-			<span class="green-line" />
+			<span class="border-b-4 border-[#0eff02] flex-1 relative -top-2" />
 		</div>
-		<div class="actions">
-			{#if wallet?.address || inputUrl}
-				<div
-					transition:fade={{ delay: 100, duration: 100 }}
-					class={!wallet?.keepPopup ? 'action dim' : 'action'}
-				>
-					<IconButton icon={popupIcon} on:keypress={togglePopup} on:click={togglePopup} />
-				</div>
-			{/if}
-
+		<div class="flex">
 			<div
 				class={data?.loading
 					? 'action dim'
@@ -157,7 +148,7 @@
 					on:click={() => {
 						wallet?.address ? disconnect() : connect();
 					}}
-					><span class={wallet?.address ? ' connected ' : ' disconnected '}>
+					><span class="{wallet?.address ? ' connected ' : ' disconnected '} hidden sm:flex">
 						{data.loading || !src ? 'Loading...' : 'Load'}
 					</span></IconButton
 				>
@@ -183,16 +174,8 @@
 	div {
 		--spacing: 1em;
 	}
-	.connector-container {
-		padding: 1.618em;
-	}
 	div {
 		--background: #161616;
-	}
-	.top {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
 	}
 	iframe {
 		border: none;
@@ -216,17 +199,12 @@
 	}
 
 	.url {
-		padding: var(--spacing);
-		padding-right: 0;
 		flex: 1 1 0;
-		min-width: 0;
-		outline: none;
 		background-color: var(--background);
 	}
 
 	.green-line {
 		border-bottom: 4px solid #0eff02;
-		margin-left: var(--spacing);
 		flex: 1;
 		position: relative;
 		top: -8px;
@@ -253,22 +231,5 @@
 	.disconnected {
 		color: #e0f7fa;
 		text-shadow: 1px 1px 3px black;
-	}
-
-	.url-input-container {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
-
-	input {
-		flex: 1 1 0;
-		color: whitesmoke;
-		background: none;
-		border: none;
-		margin: 0;
-		padding: 0;
-		font-size: 0.95em;
-		min-width: 15ch;
 	}
 </style>

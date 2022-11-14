@@ -70,10 +70,10 @@
 	</div>
 </div>
 
-<div class:mask={navOpen} on:keypress={onClickOutside} on:click={onClickOutside} />
+<div class:mask={navOpen} class="w-screen" on:keypress={onClickOutside} on:click={onClickOutside} />
 {#if ready}
 	<div class="sidenav" class:open={navOpen}>
-		<slot {openNav} {hideNav} {saveInputURL} {inputUrl} />
+		<slot {openNav} {hideNav} {saveInputURL} url={inputUrl} />
 	</div>
 {/if}
 
@@ -82,12 +82,12 @@
 		display: flex;
 		align-items: center;
 		position: absolute;
-		top: 6px;
-		right: 5px;
+		top: 0px;
+		right: 0px;
 		z-index: 50;
 		cursor: pointer;
 		/* 	background-color: black; */
-		margin: 1.618em;
+		margin: 1em;
 		opacity: 0.95;
 		width: auto;
 	}
@@ -126,7 +126,7 @@
 		right: 0;
 		height: 15%;
 		width: 0; /* 0 width - change this with JavaScript */
-		z-index: 50;
+		z-index: 40;
 		background-color: #111;
 		overflow-x: inherit; /* Disable horizontal scroll */
 		padding-top: 30px;
@@ -140,7 +140,6 @@
 	}
 
 	.mask {
-		width: 100%;
 		height: 100%;
 		position: fixed;
 		top: 0;
