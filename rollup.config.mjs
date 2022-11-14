@@ -9,9 +9,13 @@ import svg from 'rollup-plugin-svg';
 import json from '@rollup/plugin-json';
 import inlineSvg from 'rollup-plugin-inline-svg';
 import { globbySync } from 'globby';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const production = !process.env.ROLLUP_WATCH;
-const formats = ['iife', 'umd', 'es']; // ['iife', 'umd', 'es']
+const formats = ['es']; // ['iife', 'umd', 'es']
 const components = globbySync([
 	'src/lib/*.svelte' // include all svelte components
 ]).map((path) => ({
@@ -28,7 +32,7 @@ export default components.map(({ namespace, component }) => ({
 		// dir: `build/components/`,
 		format,
 		inlineDynamicImports: true
-		// sourcemap: true
+		// sourcemap: production
 	})),
 	plugins: [
 		json(),
@@ -43,11 +47,16 @@ export default components.map(({ namespace, component }) => ({
 				// customElement: true
 			},
 			preprocess: sveltePreprocess({
-				sourceMap: !production
+				sourceMap: !production,
+				postcss: {
+					// use @import when building packages for distribution
+					configFilePath: path.resolve(__dirname, './postcss.config.cjs'),
+					prependData: `@import '${path.resolve('./src/utilities.css')}';`
+				}
 			}),
-			emitCss: false // inline
+			emitCss: false // false means inline
 		}),
-		css({ output: 'bundle.css' }), // not needed if emitCss: false
+		css({ output: `${component}.bundle.css` }), // not needed if emitCss: false
 		resolve({
 			browser: true,
 			dedupe: ['svelte']
