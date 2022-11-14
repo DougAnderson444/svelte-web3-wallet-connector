@@ -6,21 +6,12 @@ import path, { dirname } from 'path';
 const config = {
 	// Consult https://github.com/sveltejs/svelte-preprocess
 	// for more information about preprocessors
-	preprocess: preprocess(),
+	preprocess: preprocess({
+		postcss: true
+	}),
 
 	kit: {
-		adapter: adapter(),
-
-		// hydrate the <div id="svelte"> element in src/app.html
-		target: '#svelte',
-
-		vite: {
-			resolve: {
-				alias: {
-					'@peerpiper/web3-wallet-connector': path.resolve('src/lib')
-				}
-			}
-		}
+		adapter: adapter()
 	}
 };
 

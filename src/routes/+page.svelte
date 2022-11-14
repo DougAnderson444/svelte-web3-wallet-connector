@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import Web3WalletMenu from '$lib/Web3WalletMenu.svelte';
 
-	import { dev } from '$app/env';
+	import { dev } from '$app/environment';
 
 	let wallet;
 	let mounted;
@@ -42,7 +42,10 @@
 			}}
 		/>
 	{/if}
-	Signature: {signature}
+	Signature:
+	<div class="max-w-screen break-all">
+		{signature}
+	</div>
 </div>
 
 <style>
