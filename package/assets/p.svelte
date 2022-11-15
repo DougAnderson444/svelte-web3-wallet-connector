@@ -38,5 +38,4 @@
 		width: auto;
 		height: 2.5em;
 		display: block;
-	}
-</style>
+	}</style>

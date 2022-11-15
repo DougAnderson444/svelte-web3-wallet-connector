@@ -1,4 +1,4 @@
-<script >// svelte stuff
+<script>// svelte stuff
 import { onMount, createEventDispatcher } from 'svelte';
 import { fade } from 'svelte/transition';
 import { connectToChild } from 'penpal';
@@ -94,38 +94,29 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="connector-container">
+<div class="flex flex-col m-2 max-w-full h-screen">
 	<div
-		class="top"
+		class="flex flex-row space-between items-center"
 		bind:offsetHeight={topOffsetHeight}
 		bind:offsetWidth={topOffsetWidth}
 		style="--topOffsetHeight: {topOffsetHeight};"
 	>
-		<a href="https://PeerPiper.io" target="_blank" rel="noreferrer">
+		<a class="flex-0 hidden sm:flex" href="https://PeerPiper.io" target="_blank" rel="noreferrer">
 			<div class="actions logo">
 				<Logo />
 			</div></a
 		>
-		<div class="url-input-container">
+		<div class="flex-shrink flex flex-col w-full pl-2">
 			<input
-				class="url"
+				class="url pl-0 p-[1em] pr-0 text-white bg-none border-none m-0 text-sm sm:text-base outline-none"
 				{placeholder}
 				on:focus={() => (focused = true)}
 				on:blur={() => (focused = false)}
 				bind:value={inputUrl}
 			/>
-			<span class="green-line" />
+			<span class="border-b-4 border-[#0eff02] flex-1 relative -top-2" />
 		</div>
-		<div class="actions">
-			{#if wallet?.address || inputUrl}
-				<div
-					transition:fade={{ delay: 100, duration: 100 }}
-					class={!wallet?.keepPopup ? 'action dim' : 'action'}
-				>
-					<IconButton icon={popupIcon} on:keypress={togglePopup} on:click={togglePopup} />
-				</div>
-			{/if}
-
+		<div class="flex">
 			<div
 				class={data?.loading
 					? 'action dim'
@@ -141,7 +132,7 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 					on:click={() => {
 						wallet?.address ? disconnect() : connect();
 					}}
-					><span class={wallet?.address ? ' connected ' : ' disconnected '}>
+					><span class="{wallet?.address ? ' connected ' : ' disconnected '} hidden sm:flex">
 						{data.loading || !src ? 'Loading...' : 'Load'}
 					</span></IconButton
 				>
@@ -163,32 +154,65 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 	</div>
 </div>
 
-<style>
-	div {
-		--spacing: 1em;
-	}
-	.connector-container {
-		padding: 1.618em;
-	}
-	div {
-		--background: #161616;
-	}
-	.top {
+<style>.relative {
+		position: relative;
+}.-top-2 {
+		top: -0.5rem;
+}.m-2 {
+		margin: 0.5rem;
+}.m-0 {
+		margin: 0px;
+}.flex {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	iframe {
-		border: none;
+}.hidden {
+		display: none;
+}.h-screen {
+		height: 100vh;
+}.w-full {
 		width: 100%;
-		height: 100%;
-	}
-	.iframe {
+}.max-w-full {
+		max-width: 100%;
+}.flex-1 {
+		flex: 1 1 0%;
+}.flex-shrink {
+		flex-shrink: 1;
+}.flex-row {
+		flex-direction: row;
+}.flex-col {
+		flex-direction: column;
+}.items-center {
+		align-items: center;
+}.border-b-4 {
+		border-bottom-width: 4px;
+}.border-none {
+		border-style: none;
+}.border-\[\#0eff02\] {
+		--tw-border-opacity: 1;
+		border-color: rgb(14 255 2 / var(--tw-border-opacity));
+}.bg-none {
+		background-image: none;
+}.p-\[1em\] {
+		padding: 1em;
+}.pl-2 {
+		padding-left: 0.5rem;
+}.pl-0 {
+		padding-left: 0px;
+}.pr-0 {
+		padding-right: 0px;
+}.text-sm {
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+}.text-white {
+		--tw-text-opacity: 1;
+		color: rgb(255 255 255 / var(--tw-text-opacity));
+}.outline-none {
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+}.iframe {
 		display: flex;
 		height: 100%;
 		min-height: 500px;
-	}
-	.logo {
+	}.logo {
 		flex: 0 0 auto;
 		position: relative;
 		opacity: 1;
@@ -197,62 +221,22 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 		align-items: center;
 		justify-content: center;
 		padding: calc(var(--spacing) / 2);
-	}
-
-	.url {
-		padding: var(--spacing);
-		padding-right: 0;
+	}.url {
 		flex: 1 1 0;
-		min-width: 0;
-		outline: none;
 		background-color: var(--background);
-	}
-
-	.green-line {
-		border-bottom: 4px solid #0eff02;
-		margin-left: var(--spacing);
-		flex: 1;
-		position: relative;
-		top: -8px;
-	}
-
-	.actions {
+	}.actions {
 		display: flex;
-	}
-
-	.actions:last-child {
+	}.actions:last-child {
 		padding-right: calc(var(--spacing) / 2);
-	}
-
-	.action.dim {
-		opacity: 0.9;
-		color: #e0f7fa;
-	}
-
-	.connected {
+	}.connected {
 		color: greenyellow;
 		text-shadow: 1px 1px 3px black;
-	}
-
-	.disconnected {
+	}.disconnected {
 		color: #e0f7fa;
 		text-shadow: 1px 1px 3px black;
-	}
-
-	.url-input-container {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
-
-	input {
-		flex: 1 1 0;
-		color: whitesmoke;
-		background: none;
-		border: none;
-		margin: 0;
-		padding: 0;
-		font-size: 0.95em;
-		min-width: 15ch;
-	}
-</style>
+	}.sm\:flex {
+				display: flex;
+		}.sm\:text-base {
+				font-size: 1rem;
+				line-height: 1.5rem;
+		}</style>

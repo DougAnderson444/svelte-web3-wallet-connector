@@ -10,7 +10,7 @@ export default class MenuWrapper extends SvelteComponentTyped<{
         openNav: () => boolean;
         hideNav: () => void;
         saveInputURL: any;
-        inputUrl: any;
+        url: any;
     };
 }> {
 }
@@ -30,7 +30,7 @@ declare const __propDef: {
             openNav: () => boolean;
             hideNav: () => void;
             saveInputURL: any;
-            inputUrl: any;
+            url: any;
         };
     };
 };

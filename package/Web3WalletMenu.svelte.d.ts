@@ -2,7 +2,7 @@
 /** @typedef {typeof __propDef.events}  Web3WalletMenuEvents */
 /** @typedef {typeof __propDef.slots}  Web3WalletMenuSlots */
 export default class Web3WalletMenu extends SvelteComponentTyped<{
-    inputUrl?: string;
+    inputUrl?: any;
     wallet?: any;
 }, {
     walletReady: CustomEvent<any>;
@@ -16,7 +16,7 @@ export type Web3WalletMenuSlots = typeof __propDef.slots;
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
     props: {
-        inputUrl?: string;
+        inputUrl?: any;
         wallet?: any;
     };
     events: {

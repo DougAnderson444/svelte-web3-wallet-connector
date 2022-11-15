@@ -70,32 +70,30 @@
 	</div>
 </div>
 
-<div class:mask={navOpen} on:keypress={onClickOutside} on:click={onClickOutside} />
+<div class:mask={navOpen} class="w-screen" on:keypress={onClickOutside} on:click={onClickOutside} />
 {#if ready}
 	<div class="sidenav" class:open={navOpen}>
-		<slot {openNav} {hideNav} {saveInputURL} {inputUrl} />
+		<slot {openNav} {hideNav} {saveInputURL} url={inputUrl} />
 	</div>
 {/if}
 
-<style>
-	.container {
+<style>.w-screen {
+		width: 100vw;
+}.container {
 		display: flex;
 		align-items: center;
 		position: absolute;
-		top: 6px;
-		right: 5px;
-		z-index: 100;
+		top: 0px;
+		right: 0px;
+		z-index: 50;
 		cursor: pointer;
 		/* 	background-color: black; */
-		margin: 1.618em;
+		margin: 1em;
 		opacity: 0.95;
 		width: auto;
-	}
-
-	.menu-icon {
+	}.menu-icon {
 		display: inline-block;
-	}
-	.bar1,
+	}.bar1,
 	.bar2,
 	.bar3 {
 		width: 35px;
@@ -103,44 +101,28 @@
 		background-color: #0bb113;
 		margin: 6px 0;
 		transition: 0.4s;
-	}
-
-	.change .bar1 {
-		-webkit-transform: rotate(-45deg) translate(-9px, 6px);
+	}.change .bar1 {
 		transform: rotate(-45deg) translate(-9px, 6px);
-	}
-
-	.change .bar2 {
+	}.change .bar2 {
 		opacity: 0;
-	}
-
-	.change .bar3 {
-		-webkit-transform: rotate(45deg) translate(-8px, -8px);
+	}.change .bar3 {
 		transform: rotate(45deg) translate(-8px, -8px);
-	}
-
-	/* The side navigation menu */
-	.sidenav {
+	}.sidenav {
 		position: fixed;
 		top: 0;
 		right: 0;
 		height: 15%;
 		width: 0; /* 0 width - change this with JavaScript */
-		z-index: 50;
+		z-index: 40;
 		background-color: #111;
 		overflow-x: inherit; /* Disable horizontal scroll */
 		padding-top: 30px;
 		transition: 0.25s;
-	}
-
-	.open {
+	}.open {
 		width: 80%;
 		height: 100%;
 		overflow-x: scroll;
-	}
-
-	.mask {
-		width: 100%;
+	}.mask {
 		height: 100%;
 		position: fixed;
 		top: 0;
@@ -148,12 +130,6 @@
 		opacity: 0.5;
 		background-color: #444;
 		transition: 0.4s;
-	}
-
-	/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-	@media screen and (max-height: 450px) {
-		.sidenav {
+	}.sidenav {
 			padding-top: 15px;
-		}
-	}
-</style>
+		}</style>

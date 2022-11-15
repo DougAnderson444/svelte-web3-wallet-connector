@@ -1,4 +1,4 @@
-<script >import { onMount, createEventDispatcher } from 'svelte';
+<script>import { onMount, createEventDispatcher } from 'svelte';
 let wallet; // the variable you interact with the wallet functions
 let Web3WalletMenu; // the Component variable
 let RSAPublicKey;
@@ -20,10 +20,16 @@ async function walletReady(e) {
 }
 </script>
 
-<!-- Anywhere in your app, it will be fixed in the upper right hand corner of the page -->
-{#if Web3WalletMenu}
-	<svelte:component this={Web3WalletMenu} on:walletReady={walletReady} />
-	{#if wallet && RSAPublicKey && Ed25519PublicKey}
-		<slot {wallet} {ownerAddress} {RSAPublicKey} {Ed25519PublicKey} />
+<section class="m-0">
+	<!-- Anywhere in your app, it will be fixed in the upper right hand corner of the page -->
+	{#if Web3WalletMenu}
+		<svelte:component this={Web3WalletMenu} on:walletReady={walletReady} />
+		{#if wallet && RSAPublicKey && Ed25519PublicKey}
+			<slot {wallet} {ownerAddress} {RSAPublicKey} {Ed25519PublicKey} />
+		{/if}
 	{/if}
-{/if}
+</section>
+
+<style>.m-0 {
+    margin: 0px
+}</style>

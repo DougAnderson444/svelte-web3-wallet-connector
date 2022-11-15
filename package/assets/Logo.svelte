@@ -36,5 +36,4 @@
 		width: auto;
 		height: 2em;
 		display: block;
-	}
-</style>
+	}</style>
