@@ -32,7 +32,7 @@
 		// check for URL
 		try {
 			const storedValue = await ImmortalDB.get(INPUT_URL, null);
-			if (storedValue && !inputUrl) {
+			if (storedValue) {
 				inputUrl = storedValue;
 			}
 		} catch (error) {
@@ -129,7 +129,7 @@
 		z-index: 40;
 		background-color: #111;
 		overflow-x: inherit; /* Disable horizontal scroll */
-		padding-top: 30px;
+		padding-top: 45px;
 		transition: 0.25s;
 	}
 
@@ -147,12 +147,5 @@
 		opacity: 0.5;
 		background-color: #444;
 		transition: 0.4s;
-	}
-
-	/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-	@media screen and (max-height: 450px) {
-		.sidenav {
-			padding-top: 15px;
-		}
 	}
 </style>
