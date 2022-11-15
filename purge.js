@@ -29,6 +29,10 @@ svelteFiles.forEach((file) => {
 	const styleTagContent = styleTagContents[0].match(styleTagContentRegex)[0];
 	// console.log('styleTagContent', styleTagContent);
 
+	// regex for string that start with @media and ends with } inlcuding the double closing } }  braces possibly separated by carriage returns or new lines and spaces, inclusive of the last curly brace
+	const mediaRegex = /@media[^]+?}[^\\r|\\n]+?}/gi;
+	const mediaStatements = styleTagContent.match(mediaRegex);
+
 	// regex parse out each class statement, keep the leading . and the {} block
 	const classRegex = /\.([a-zA-Z0-9_-]+)[^]+?{[^]+?}/gi;
 	const classStatements = styleTagContent.match(classRegex);
@@ -60,8 +64,26 @@ svelteFiles.forEach((file) => {
 		return isUsed ? statement : '';
 	});
 
+	// keep all media statements
+	const keepMedia = mediaStatements.length
+		? mediaStatements.map((media) => {
+				// get the part of the media statement after the backslash "\:" and before the second opening curly brace "{"
+				const matches = media.match(/\\:([a-zA-Z0-9_-]+)[^]+?{/i);
+
+				console.log(media, 'matches', matches);
+				const className = matches[1];
+				const isUsed = classStatements4.some((c) => c.includes(className));
+				return isUsed ? media.replace(/[\r\t\s]+/g, '') : '';
+		  })
+		: [];
+
+	if (keepMedia[0]) console.log({ keepMedia });
+
+	// add media statements to keep
+	keep.push(...keepMedia);
+
 	// join keep together
-	const newStyleTagContent = keep.join('');
+	let newStyleTagContent = keep.join('');
 
 	// wrap in <style> tags
 	const newStyleTagBlock = `<style>${newStyleTagContent}</style>`;
