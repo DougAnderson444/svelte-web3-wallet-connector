@@ -117,22 +117,22 @@
 		bind:offsetWidth={topOffsetWidth}
 		style="--topOffsetHeight: {topOffsetHeight};"
 	>
-		<a class="flex-0 hidden sm:flex" href="https://PeerPiper.io" target="_blank" rel="noreferrer">
+		<a class="flex-0 hidden md:flex" href="https://PeerPiper.io" target="_blank" rel="noreferrer">
 			<div class="actions logo">
 				<Logo />
 			</div></a
 		>
 		<div class="flex-shrink flex flex-col w-full pl-2">
 			<input
-				class="url pl-0 p-[1em] pr-0 text-white bg-none border-none m-0 text-sm sm:text-base outline-none"
+				class="border-b-4 border-toxic url pl-0 p-2 pr-0 m-2 text-white bg-none border-none text-sm sm:text-base outline-none"
 				{placeholder}
 				on:focus={() => (focused = true)}
 				on:blur={() => (focused = false)}
 				bind:value={inputUrl}
 			/>
-			<span class="border-b-4 border-[#0eff02] flex-1 relative -top-2" />
+			<span class="border-b-4 border-toxic flex-1 relative -top-2" />
 		</div>
-		<div class="flex">
+		<div class="hidden md:flex">
 			<div
 				class={data?.loading
 					? 'action dim'
