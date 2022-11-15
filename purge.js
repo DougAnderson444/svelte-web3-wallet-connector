@@ -26,16 +26,18 @@ svelteFiles.forEach((file) => {
 
 	// get content between <style> tags
 	const styleTagContentRegex = /<style[^]+?<\/style>/i;
-	const styleTagContent = styleTagContents[0].match(styleTagContentRegex)[0];
-	// console.log('styleTagContent', styleTagContent);
+	let styleTagContent = styleTagContents[0].match(styleTagContentRegex)[0];
 
 	// regex for string that start with @media and ends with } inlcuding the double closing } }  braces possibly separated by carriage returns or new lines and spaces, inclusive of the last curly brace
-	const mediaRegex = /@media[^]+?}[^\\r|\\n]+?}/gi;
+	const mediaRegex = /@media[^]+?}[^\\r\\n]+?}/gi;
 	const mediaStatements = styleTagContent.match(mediaRegex);
 
-	// regex parse out each class statement, keep the leading . and the {} block
+	// remove any media statements from style tag content
+	const styleTagContentNoMedia = styleTagContent.replace(mediaRegex, '');
+
+	// regex parse out each class statement, keep the leading . and the {} block but exclude anything in a @media {} block
 	const classRegex = /\.([a-zA-Z0-9_-]+)[^]+?{[^]+?}/gi;
-	const classStatements = styleTagContent.match(classRegex);
+	const classStatements = styleTagContentNoMedia.match(classRegex);
 
 	// get all text from inside class="" and "class:" from rest of file
 	const classRegex2 = /class:([a-zA-Z0-9_-]+)|class="([^]+?)"/gi;
@@ -65,19 +67,15 @@ svelteFiles.forEach((file) => {
 	});
 
 	// keep all media statements
-	const keepMedia = mediaStatements.length
+	const keepMedia = mediaStatements?.length
 		? mediaStatements.map((media) => {
 				// get the part of the media statement after the backslash "\:" and before the second opening curly brace "{"
 				const matches = media.match(/\\:([a-zA-Z0-9_-]+)[^]+?{/i);
-
-				console.log(media, 'matches', matches);
 				const className = matches[1];
 				const isUsed = classStatements4.some((c) => c.includes(className));
 				return isUsed ? media.replace(/[\r\t\s]+/g, '') : '';
 		  })
 		: [];
-
-	if (keepMedia[0]) console.log({ keepMedia });
 
 	// add media statements to keep
 	keep.push(...keepMedia);
