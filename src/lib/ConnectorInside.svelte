@@ -122,7 +122,7 @@
 				<Logo />
 			</div></a
 		>
-		<div class="flex-shrink flex flex-col w-full pl-2">
+		<div class="flex-shrink flex flex-col w-full pl-2 md:p-2">
 			<input
 				class="border-b-4 border-toxic url pl-0 p-2 pr-0 m-2 text-white bg-none border-none text-sm sm:text-base outline-none"
 				{placeholder}
@@ -156,11 +156,12 @@
 		</div>
 	</div>
 	<div
-		class="iframe"
+		class="iframe flex"
 		style="height: calc({iframeParentHeight}px + 18px)"
 		bind:offsetWidth={iframeOffsetWidth}
 	>
 		<iframe
+			class="w-full border-none min-h-full"
 			title="Web Wallet"
 			bind:this={iframe}
 			{src}
@@ -177,14 +178,7 @@
 	div {
 		--background: #161616;
 	}
-	iframe {
-		border: none;
-		width: 100%;
-		height: 100%;
-	}
 	.iframe {
-		display: flex;
-		height: 100%;
 		min-height: 500px;
 	}
 	.logo {
@@ -201,13 +195,6 @@
 	.url {
 		flex: 1 1 0;
 		background-color: var(--background);
-	}
-
-	.green-line {
-		border-bottom: 4px solid #0eff02;
-		flex: 1;
-		position: relative;
-		top: -8px;
 	}
 
 	.actions {
