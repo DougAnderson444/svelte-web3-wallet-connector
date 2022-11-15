@@ -1,6 +1,6 @@
 {
 	"name": "@peerpiper/web3-wallet-connector",
-	"version": "0.1.11",
+	"version": "0.1.13",
 	"main": "index.js",
 	"module": "index.js",
 	"scripts": {
