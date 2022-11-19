@@ -38,7 +38,6 @@
 	});
 
 	async function handleIframeLoad() {
-		// console.log('Iframe loaded');
 		data.loading = false;
 
 		let pending;
@@ -52,14 +51,12 @@
 					iframeParentHeight = height;
 				},
 				setIframeParentWidth(width) {
-					// console.log('Rx width', width);
 					iframeParentWidth = width;
 				},
 				show() {
 					show();
 				},
 				hide() {
-					console.log('hiding', { hide });
 					hide();
 				},
 				// walletReady gets called from wallet-sdk when
