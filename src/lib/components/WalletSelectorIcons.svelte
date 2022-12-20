@@ -8,6 +8,8 @@
 </script>
 
 <button
+	class="cursor-pointer flex flex-auto relative opacity-80 h-full items-center justify-center
+text-inherit bg-none border-none m-0 p-0 text-base bg-inherit"
 	on:keypress={() => dispatch('click', 'detail value')}
 	on:click={() => dispatch('click', 'detail value')}
 >
@@ -15,6 +17,7 @@
 		{#if icon === 'close'}
 			<div transition:fade={{ delay: 100, duration: 100 }}>
 				<svg
+					class="svg"
 					xmlns="http://www.w3.org/2000/svg"
 					enable-background="new 0 0 24 24"
 					viewBox="0 0 24 24"
@@ -27,7 +30,7 @@
 		{/if}
 		{#if icon === 'launch'}
 			<div transition:fade={{ delay: 100, duration: 100 }}>
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+				<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
 					><path d="M0 0h24v24H0z" fill="none" /><path
 						d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"
 					/></svg
@@ -36,7 +39,7 @@
 		{/if}
 		{#if icon === 'plug'}
 			<div transition:fade={{ delay: 100, duration: 100 }}>
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+				<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
 					><path d="M0 0h24v24H0z" fill="none" /><path
 						d="M16.01 7L16 3h-2v4h-4V3H8v4h-.01C7 6.99 6 7.99 6 8.99v5.49L9.5 18v3h5v-3l3.5-3.51v-5.5c0-1-1-2-1.99-1.99z"
 					/></svg
@@ -45,7 +48,7 @@
 		{/if}
 		{#if icon === 'unplug'}
 			<div transition:fade={{ delay: 100, duration: 100 }}>
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+				<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
 					><path d="M0 0h24v24H0V0z" fill="none" /><path
 						d="M18 14.49V9c0-1-1.01-2.01-2-2V3h-2v4h-4V3H8v2.48l9.51 9.5.49-.49zm-1.76 1.77L7.2 7.2l-.01.01L3.98 4 2.71 5.25l3.36 3.36C6.04 8.74 6 8.87 6 9v5.48L9.5 18v3h5v-3l.48-.48L19.45 22l1.26-1.28-4.47-4.46z"
 					/></svg
@@ -57,27 +60,6 @@
 </button>
 
 <style lang="postcss">
-	button {
-		cursor: pointer;
-		flex: 0 0 auto;
-		position: relative;
-		opacity: 0.8;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	button {
-		color: inherit;
-		background: none;
-		border: none;
-		margin: 0;
-		padding: 0;
-		font-size: 1em;
-		cursor: pointer;
-	}
-
 	.img-container {
 		margin: calc(var(--spacing) / 2);
 		width: 1.6em;
@@ -85,7 +67,7 @@
 		position: relative;
 	}
 
-	svg {
+	.svg {
 		width: 100%;
 		height: 100%;
 		top: 0;

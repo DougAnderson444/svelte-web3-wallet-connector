@@ -32,7 +32,7 @@
 		// check for URL
 		try {
 			const storedValue = await ImmortalDB.get(INPUT_URL, null);
-			if (storedValue && !inputUrl) {
+			if (storedValue) {
 				inputUrl = storedValue;
 			}
 		} catch (error) {
@@ -116,7 +116,7 @@
 		z-index: 40;
 		background-color: #111;
 		overflow-x: inherit; /* Disable horizontal scroll */
-		padding-top: 30px;
+		padding-top: 45px;
 		transition: 0.25s;
 	}.open {
 		width: 80%;
@@ -130,6 +130,4 @@
 		opacity: 0.5;
 		background-color: #444;
 		transition: 0.4s;
-	}.sidenav {
-			padding-top: 15px;
-		}</style>
+	}</style>

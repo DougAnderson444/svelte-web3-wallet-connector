@@ -27,7 +27,6 @@ onMount(async () => {
     connect();
 });
 async function handleIframeLoad() {
-    // console.log('Iframe loaded');
     data.loading = false;
     let pending;
     const connection = connectToChild({
@@ -39,14 +38,12 @@ async function handleIframeLoad() {
                 iframeParentHeight = height;
             },
             setIframeParentWidth(width) {
-                // console.log('Rx width', width);
                 iframeParentWidth = width;
             },
             show() {
                 show();
             },
             hide() {
-                console.log('hiding', { hide });
                 hide();
             },
             // walletReady gets called from wallet-sdk when
@@ -101,22 +98,22 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 		bind:offsetWidth={topOffsetWidth}
 		style="--topOffsetHeight: {topOffsetHeight};"
 	>
-		<a class="flex-0 hidden sm:flex" href="https://PeerPiper.io" target="_blank" rel="noreferrer">
+		<a class="flex-0 hidden md:flex" href="https://PeerPiper.io" target="_blank" rel="noreferrer">
 			<div class="actions logo">
 				<Logo />
 			</div></a
 		>
-		<div class="flex-shrink flex flex-col w-full pl-2">
+		<div class="flex-shrink flex flex-col w-full pl-2 md:p-2">
 			<input
-				class="url pl-0 p-[1em] pr-0 text-white bg-none border-none m-0 text-sm sm:text-base outline-none"
+				class="border-b-4 border-toxic url pl-0 p-2 pr-0 m-2 text-white bg-none border-none text-sm sm:text-base outline-none"
 				{placeholder}
 				on:focus={() => (focused = true)}
 				on:blur={() => (focused = false)}
 				bind:value={inputUrl}
 			/>
-			<span class="border-b-4 border-[#0eff02] flex-1 relative -top-2" />
+			<span class="border-b-4 border-toxic flex-1 relative -top-2" />
 		</div>
-		<div class="flex">
+		<div class="hidden md:flex">
 			<div
 				class={data?.loading
 					? 'action dim'
@@ -140,11 +137,12 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 		</div>
 	</div>
 	<div
-		class="iframe"
+		class="iframe flex"
 		style="height: calc({iframeParentHeight}px + 18px)"
 		bind:offsetWidth={iframeOffsetWidth}
 	>
 		<iframe
+			class="w-full border-none min-h-full"
 			title="Web Wallet"
 			bind:this={iframe}
 			{src}
@@ -160,14 +158,14 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 		top: -0.5rem;
 }.m-2 {
 		margin: 0.5rem;
-}.m-0 {
-		margin: 0px;
 }.flex {
 		display: flex;
 }.hidden {
 		display: none;
 }.h-screen {
 		height: 100vh;
+}.min-h-full {
+		min-height: 100%;
 }.w-full {
 		width: 100%;
 }.max-w-full {
@@ -186,13 +184,13 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 		border-bottom-width: 4px;
 }.border-none {
 		border-style: none;
-}.border-\[\#0eff02\] {
+}.border-toxic {
 		--tw-border-opacity: 1;
 		border-color: rgb(14 255 2 / var(--tw-border-opacity));
 }.bg-none {
 		background-image: none;
-}.p-\[1em\] {
-		padding: 1em;
+}.p-2 {
+		padding: 0.5rem;
 }.pl-2 {
 		padding-left: 0.5rem;
 }.pl-0 {
@@ -202,6 +200,9 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 }.text-sm {
 		font-size: 0.875rem;
 		line-height: 1.25rem;
+}.text-base {
+		font-size: 1rem;
+		line-height: 1.5rem;
 }.text-white {
 		--tw-text-opacity: 1;
 		color: rgb(255 255 255 / var(--tw-text-opacity));
@@ -209,8 +210,6 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 		outline: 2px solid transparent;
 		outline-offset: 2px;
 }.iframe {
-		display: flex;
-		height: 100%;
 		min-height: 500px;
 	}.logo {
 		flex: 0 0 auto;
@@ -234,9 +233,4 @@ $: iframeOffsetWidth && wallet && wallet?.setWidth(iframeOffsetWidth);
 	}.disconnected {
 		color: #e0f7fa;
 		text-shadow: 1px 1px 3px black;
-	}.sm\:flex {
-				display: flex;
-		}.sm\:text-base {
-				font-size: 1rem;
-				line-height: 1.5rem;
-		}</style>
+	}@media(min-width:640px){.sm\:flex{display:flex;}.sm\:text-base{font-size:1rem;line-height:1.5rem;}}@media(min-width:768px){.md\:flex{display:flex;}.md\:p-2{padding:0.5rem;}}</style>

@@ -3,7 +3,7 @@
 	import MenuWrapper from './MenuWrapper.svelte';
 	import ConnectorInside from './ConnectorInside.svelte';
 
-	export let inputUrl = null; // = 'https://peerpiper.github.io/iframe-wallet-sdk/';
+	export let inputUrl = 'https://peerpiper.github.io/iframe-wallet-sdk/';
 	export let wallet = null;
 
 	let mounted;

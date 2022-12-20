@@ -2,7 +2,7 @@
 	import '$lib/app.css';
 
 	import { onMount } from 'svelte';
-	import Web3WalletMenu from '$lib/Web3WalletMenu.svelte';
+	import { Web3WalletMenu } from '../../package/index';
 
 	import { dev } from '$app/environment';
 

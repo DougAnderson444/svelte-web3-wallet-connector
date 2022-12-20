@@ -15,6 +15,11 @@ const config = {
 	optimizeDeps: {
 		// include: [],
 		// force: true
+	},
+	server: {
+		fs: {
+			strict: false
+		}
 	}
 };
 
